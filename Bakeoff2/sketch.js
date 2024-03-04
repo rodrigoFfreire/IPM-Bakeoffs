@@ -28,9 +28,142 @@ let current_trial         = 0;      // the current trial number (indexes into tr
 let attempt               = 0;      // users complete each test twice to account for practice (attemps 0 and 1)
 
 // Target list and layout variables
-//let targets               = [];
-const GRID_ROWS           = 8;      // We divide our 80 targets in a 8x10 grid
-const GRID_COLUMNS        = 10;     // We divide our 80 targets in a 8x10 grid
+let menus;
+const GRID_ROWS           = 2;      // We divide our 80 targets in a 8x10 grid
+const GRID_COLUMNS        = 13;     // We divide our 80 targets in a 8x10 grid
+
+let hoverDisplay = ""; // Display City being hovered over
+
+class Menu {
+    constructor(x, y, w, id, prefix, targets_size, horizontal_gap, vertical_gap) {
+        this.targets = [];
+        this.target = new Target(x, y, w, prefix, id);
+        let matches = legendas.matchRows(prefix + ".*", 1);
+        matches.sort((A, B) => {
+          let res = A.getString(1).localeCompare(B.getString(1));
+          if (!res) {
+            let swap = A.getNum(0);
+            A.setNum(0, B.getNum(0));
+            B.setNum(0, swap);
+          }
+          return res;
+        })
+        // Define the margins between targets by dividing the white space 
+        // for the number of targets minus one
+        let h_margin = horizontal_gap / (GRID_COLUMNS - 1);
+        let v_margin = vertical_gap / (GRID_ROWS - 1);
+
+        // Set targets in a 8 x 10 grid
+        let i = 0;
+        for (var r = 0; r < GRID_ROWS; r++) {
+            for (var c = 0; c < GRID_COLUMNS; c++) {
+                if (i === matches.length)
+                    break;
+                let target_x = 40 + (h_margin + targets_size) * c + targets_size / 2;        // give it some margin from the left border
+                let target_y = (v_margin + targets_size) * r + targets_size / 2;
+
+                let target_id = matches[i].getNum(0);
+                let target_label = matches[i].getString(1);
+
+                let target = new Target(target_x, target_y + 40, targets_size, target_label, target_id);
+                this.targets.push(target);
+                i++;
+            }  
+        }
+    }
+
+    // Checks if a mouse click hit a target within the menu and if so
+    // returns which.
+    clickedMenu(mouse_x, mouse_y) {
+        return this.target.clicked(mouse_x, mouse_y);
+    }
+
+    // Draws the menu and it's targets.
+    drawMenu() {
+        this.target.draw();
+    }
+
+    // Checks if a mouse click hit a target within the menu and if so
+    // returns which.
+    clicked(mouse_x, mouse_y) {
+        for (let i = 0; i < this.targets.length; i++) {
+            if (this.targets[i].clicked(mouse_x, mouse_y))
+                return this.targets[i].id;
+        }
+        return -1;
+    }
+
+    // Draws the menu and it's targets.
+    draw() {
+        for (let i = 0; i < this.targets.length; i++)
+            this.targets[i].draw();
+    }
+}
+
+class Menus {
+    constructor() {
+        this.menus = [];
+        this.selected = -1;
+        this.r = 0;
+        this.c = 0;
+    }
+  
+    clear() {
+      this.menus = [];
+      this.selected = -1;
+      this.r = 0;
+      this.c = 0;
+    }
+
+    // Checks if a mouse click hit a target within the menu and if so
+    // returns which.
+    clickedMenu(mouse_x, mouse_y) {
+        if (this.selected !== -1)
+            return -1;
+        for (let i = 0; i < this.menus.length; i++) {
+            if (this.menus[i].clickedMenu(mouse_x, mouse_y))
+                return this.menus[i].target.id;
+        }
+        return -1;
+    }
+
+    // Checks if a mouse click hit a target within the menu and if so
+    // returns which.
+    clicked(mouse_x, mouse_y) {
+        if (this.selected === -1)
+            return -1;
+        return this.menus[this.selected].clicked(mouse_x, mouse_y);
+    }
+
+    withinMenu() {
+        return this.selected !== -1;
+    }
+
+    select(menu) {
+        this.selected = menu;
+    }
+
+    with(prefix, target_size, horizontal_gap, vertical_gap) {
+        let h_margin = horizontal_gap / (GRID_COLUMNS - 1);
+        let v_margin = vertical_gap / (GRID_ROWS - 1);
+        let x = 40 + (h_margin + target_size) * this.c + target_size / 2;        // give it some margin from the left border
+        let y = (v_margin + target_size) * this.r + target_size / 2;
+        this.r += floor((this.c + 1) / GRID_COLUMNS);
+        this.c = (this.c + 1) % GRID_COLUMNS;
+        let menu = new Menu(x, y + 40, target_size, this.menus.length, prefix, target_size, horizontal_gap, vertical_gap);
+        this.menus.push(menu);
+    }
+
+    // Draws the menu and it's targets.
+    draw() {
+        if (this.selected === -1) {
+            for (let i = 0; i < this.menus.length; i++)
+                this.menus[i].drawMenu();
+            return;
+        }
+        this.menus[this.selected].draw();
+    }
+}
 
 // Ensures important data is loaded before the program starts
 function preload()
@@ -44,6 +177,7 @@ function setup()
 {
   createCanvas(700, 500);    // window size in px before we go into fullScreen()
   frameRate(60);             // frame rate (DO NOT CHANGE!)
+  menus = new Menus();
   randomizeTrials();         // randomize the trial order at the start of execution
   drawUserIDScreen();        // draws the user start-up screen (student ID and display size)
 }
@@ -62,17 +196,16 @@ function draw()
     textAlign(LEFT);
     text("Trial " + (current_trial + 1) + " of " + trials.length, 50, 20);
     
-    drawCurrentFrame();
     // Draw all targets
 	//for (var i = 0; i < legendas.getRowCount(); i++)
       //targets[i].draw();
-    //menus.draw();
+    menus.draw();
     
     // Displays the city on the button being currently hovered over
-    /*fill(255, 255, 255);
+    fill(255, 255, 255);
     textSize(32);
     textAlign(CENTER);
-    text(hoverDisplay, width/2, height/2);*/
+    text(hoverDisplay, width/2, height/2);
     //text(hoverDisplay, width - 60, floor(mouseY / (height / 10)) * (height /10) + (height / 20));
     
     // Draws the target label to be selected in the current trial. We include 
@@ -152,17 +285,17 @@ function mousePressed()
   // (i.e., during target selections)
   if (draw_targets)
   {
-    detectClick(mouseX, mouseY);
-    /*let click = menus.clicked(mouseX, mouseY);
+    let click = menus.clicked(mouseX, mouseY);
     if (click !== -1) {
       if (click === trials[current_trial] + 1)
         hits++;
       else
         misses++;
+      menus.select(-1);
       current_trial++;
     } else {
-      menus.select(menus.clicked(mouseX, mouseY));
-    }*/
+      menus.select(menus.clickedMenu(mouseX, mouseY));
+    }
     /*for (var i = 0; i < legendas.getRowCount(); i++)
     {
       // Check if the user clicked over one of the targets
@@ -199,24 +332,16 @@ function mousePressed()
 }
 
 // Mouse was moved
-/*function mouseMoved() 
+function mouseMoved() 
 {
   // Only look for mouse releases during the actual test
   // (i.e., during target selections)
   if (draw_targets)
   {
-    let display = "";
-    for (var i = 0; i < legendas.getRowCount(); i++)
-    {
-      // Check if the user hovered over one of the targets
-      if (targets[i].clicked(mouseX, mouseY)) 
-      {
-        display = targets[i].label;
-      }
-    }
-    hoverDisplay = display;
+    menus.clicked(mouseX, mouseY);
+    menus.clickedMenu(mouseX, mouseY);
   }
-}*/
+}
 
 // Evoked after the user starts its second (and last) attempt
 function continueTest()
@@ -238,31 +363,45 @@ function continueTest()
 // Creates and positions the UI targets
 function createTargets(target_size, horizontal_gap, vertical_gap)
 {
-  setupFrames(horizontal_gap, vertical_gap);
-  let menus = new Targets(400, 400, 10, 10, 500, 500, target_size);//new Targets(width / 2 - 200, height / 2 - 200, 10, 10, 400, 400, target_size);
-  let t3 = new Targets(400, 400, 10, 10, 500, 500, target_size);
-  t3.with(new Target(200, 200, 2, "Hey", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Hey", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Hey", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  let m3 = new Menu(400, 400, target_size, "Menu 3", color(255, 255, 255), "Arial", color(0, 0, 0), 18, base_frame, 10, 10);
-  m3.with(t3);
-  menus.with(m3);
-  let t1 = new Targets(400, 400, 10, 10, 500, 500, target_size);
-  t1.with(new Target(200, 200, 2, "Hey", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t1.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  let m1 = new Menu(400, 400, target_size, "Menu 1", color(255, 0, 0), "Arial", color(0, 0, 0), 18, base_frame, 10, 10);
-  m1.with(t1);
-  menus.with(m1);
-  base_frame.with(menus);
+  menus.with("Ba", target_size, horizontal_gap, vertical_gap);
+  menus.with("Br", target_size, horizontal_gap, vertical_gap);
+  menus.with("Be", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bu", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bh", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bi", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bl", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bo", target_size, horizontal_gap, vertical_gap);
+  menus.with("By", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bé", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bn", target_size, horizontal_gap, vertical_gap);
+  /*// Define the margins between targets by dividing the white space 
+  // for the number of targets minus one
+  h_margin = horizontal_gap / (GRID_COLUMNS -1);
+  v_margin = vertical_gap / (GRID_ROWS - 1);
+  
+  legendas.rows.sort((a, b) => {
+        let valueA = a.getString(1);
+        let valueB = b.getString(1);
+        return valueA.localeCompare(valueB);
+    });
+  
+  // Set targets in a 8 x 10 grid
+  for (var r = 0; r < GRID_ROWS; r++)
+  {
+    for (var c = 0; c < GRID_COLUMNS; c++)
+    {
+      let target_x = 40 + (h_margin + target_size) * c + target_size/2;        // give it some margin from the left border
+      let target_y = (v_margin + target_size) * r + target_size/2;
+      
+      // Find the appropriate label and ID for this target
+      let legendas_index = c + GRID_COLUMNS * r;
+      let target_id = legendas.getNum(legendas_index, 0);
+      let target_label = legendas.getString(legendas_index, 1);
+      
+      let target = new Target(target_x, target_y + 40, target_size, target_label, target_id);
+      targets.push(target);
+    }  
+  }*/
 }
 
 // Is invoked when the canvas is resized (e.g., when we go fullscreen)
@@ -281,10 +420,11 @@ function windowResized()
     // Below we find out out white space we can have between 2 cm targets
     let screen_width   = display.width * 2.54;             // screen width
     let screen_height  = display.height * 2.54;            // screen height
-    let target_size    = 2;                                // sets the target size (will be converted to cm when passed to createTargets)
+    let target_size    = 3;                                // sets the target size (will be converted to cm when passed to createTargets)
     let horizontal_gap = screen_width - target_size * GRID_COLUMNS;// empty space in cm across the x-axis (based on 10 targets per row)
     let vertical_gap   = screen_height - target_size * GRID_ROWS;  // empty space in cm across the y-axis (based on 8 targets per column)
 
+    menus.clear();
     // Creates and positions the UI targets according to the white space defined above (in cm!)
     // 80 represent some margins around the display (e.g., for text)
     createTargets(target_size * PPCM, horizontal_gap * PPCM - 80, vertical_gap * PPCM - 80);
