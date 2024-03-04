@@ -6,8 +6,8 @@
 // p5.js reference: https://p5js.org/reference/
 
 // Database (CHANGE THESE!)
-const GROUP_NUMBER        = 51;      // Add your group number here as an integer (e.g., 2, 3)
-const RECORD_TO_FIREBASE  = true;  // Set to 'true' to record user results to Firebase
+const GROUP_NUMBER        = 0;      // Add your group number here as an integer (e.g., 2, 3)
+const RECORD_TO_FIREBASE  = false;  // Set to 'true' to record user results to Firebase
 
 // Pixel density and setup variables (DO NOT CHANGE!)
 let PPI, PPCM;
