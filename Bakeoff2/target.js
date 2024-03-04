@@ -20,17 +20,34 @@ class Target
   
   // Draws the target (i.e., a circle)
   // and its label
-  draw()
-  {
-    // Draw target
-    fill(color(255,255,255));                 
-    circle(this.x, this.y, this.width);
-    
-    // Draw label
+  renderLabel() {
     textFont("Arial", 30);
     
-    fill(color(255, 0, 0));
+    fill(color(255, 255, 255));
     textAlign(CENTER);
     text(this.label, this.x, this.y);
+  }
+
+  draw() {
+    fill(color(100, 100, 100));
+    circle(this.x, this.y, this.width);
+
+    this.renderLabel();
+  }
+}
+
+class ColoredTarget extends Target {
+  constructor(x, y, w, l, id, hue) {
+    super(x, y, w, l, id);
+    this.hue = hue;
+  }
+
+  draw() {
+    colorMode(HSB, 360, 100, 100);
+    fill((this.hue % 360), 50, 50);
+    circle(this.x, this.y, this.width);
+    colorMode(RGB, 255, 255, 255);
+
+    this.renderLabel();
   }
 }

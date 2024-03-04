@@ -1,7 +1,7 @@
 class Menu {
     constructor(x, y, w, id, prefix, targets_size, horizontal_gap, vertical_gap) {
         this.targets = [];
-        this.target = new Target(x, y, w, prefix, id);
+        this.target = new Target(x, y, w, prefix.substring(0,2), id);
         let matches = legendas.matchRows(prefix + ".*", 1);
         matches.sort((A, B) => {
           let res = A.getString(1).localeCompare(B.getString(1));
@@ -19,6 +19,8 @@ class Menu {
 
         // Set targets in a 8 x 10 grid
         let i = 0;
+        let hue = 0;
+        let prev_prefix = matches[i].getString(1).substring(0, 3);
         for (var r = 0; r < GRID_ROWS; r++) {
             for (var c = 0; c < GRID_COLUMNS; c++) {
                 if (i === matches.length)
@@ -28,8 +30,14 @@ class Menu {
 
                 let target_id = matches[i].getNum(0);
                 let target_label = matches[i].getString(1);
+                let target_label_prefix = target_label.substring(0, 3)
 
-                let target = new Target(target_x, target_y + 40, targets_size, target_label, target_id);
+                if (prev_prefix != target_label_prefix) {
+                    hue += 40;
+                    prev_prefix = target_label_prefix;
+                }
+
+                let target = new ColoredTarget(target_x, target_y + 40, targets_size, target_label, target_id, hue);
                 this.targets.push(target);
                 i++;
             }  

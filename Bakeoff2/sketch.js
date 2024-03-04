@@ -205,11 +205,11 @@ function mouseMoved()
 {
   // Only look for mouse releases during the actual test
   // (i.e., during target selections)
-  if (draw_targets)
+  /*if (draw_targets)
   {
     menus.clicked(mouseX, mouseY);
     menus.clickedMenu(mouseX, mouseY);
-  }
+  }*/
 }
 
 // Evoked after the user starts its second (and last) attempt
@@ -233,16 +233,15 @@ function continueTest()
 function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   menus.with("Ba", target_size, horizontal_gap, vertical_gap);
-  menus.with("Br", target_size, horizontal_gap, vertical_gap);
-  menus.with("Be", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bu", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bh", target_size, horizontal_gap, vertical_gap);
+  menus.with("Be|Bé", target_size, horizontal_gap, vertical_gap);
   menus.with("Bi", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bh", target_size, horizontal_gap, vertical_gap);
   menus.with("Bl", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bo", target_size, horizontal_gap, vertical_gap);
-  menus.with("By", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bé", target_size, horizontal_gap, vertical_gap);
   menus.with("Bn", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bo", target_size, horizontal_gap, vertical_gap);
+  menus.with("Br", target_size, horizontal_gap, vertical_gap);
+  menus.with("Bu", target_size, horizontal_gap, vertical_gap);
+  menus.with("By", target_size, horizontal_gap, vertical_gap);
   /*// Define the margins between targets by dividing the white space 
   // for the number of targets minus one
   h_margin = horizontal_gap / (GRID_COLUMNS -1);
