@@ -1,4 +1,4 @@
 .csv
 .vscode
 firebase.js
-legendas.csv
+*.csv
