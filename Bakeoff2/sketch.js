@@ -35,7 +35,7 @@ const GRID_COLUMNS        = 10;     // We divide our 80 targets in a 8x10 grid
 // Below we find out out white space we can have between 2 cm targets
 let screen_width; // screen width
 let screen_height; // screen height
-let target_size = 2; // sets the target size (will be converted to cm when passed to createTargets)
+let target_size = 3; // sets the target size (will be converted to cm when passed to createTargets)
 
 // Ensures important data is loaded before the program starts
 function preload()
@@ -244,29 +244,20 @@ function continueTest()
 function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
-  let menus = new Targets(3, 3, 3, 3, 500, 500, target_size);
-  let t3 = new Targets(5, 5, 1, 1, 20, 15, target_size);
-  t3.with(new Target(200, 200, 2, "Hey", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Hey", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Hey", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t3.with(new Target(200, 200, 2, "Heya", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  let m3 = new Menu(400, 400, target_size, "Menu 3", color(255, 255, 255), "Arial", color(0, 0, 0), 18, base_frame, 10, 10);
-  m3.with(t3);
-  menus.with(m3);
-  let t1 = new Targets(1, 1, 5, 5, 30, 30, target_size);
-  t1.with(new Target(200, 200, 2, "Hyooo", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  t1.with(new Target(200, 200, 2, "Haro", -1, false, color(255,255,255), "Arial", color(0,0,0), 18));
-  let m1 = new Menu(400, 400, target_size, "Menu 1", color(255, 0, 0), "Arial", color(0, 0, 0), 18, base_frame, 10, 10);
-  m1.with(t1);
-  menus.with(m1);
+  let menus = new Targets(target_size, screen_height - 3.3 * target_size, 1, 1, screen_width - 2 * target_size, 4 * target_size, target_size);
+  let cities = legendas.getColumn(1);
+  let prefs = new Set();
+  cities.sort();
+  for (let i = 0; i < cities.length; i++) {
+    let prefix = cities[i].substring(0, 2);
+    if (prefs.has(prefix))
+      continue;
+    let menu = new Menu(0, 0, target_size, prefix.slice(1), color(125, 125, 125), "Arial", color(255, 255, 255), 40, base_frame, 10, 10);
+    let targets = new Targets(target_size, screen_height - 3.3 * target_size, 0.5, 0.5, screen_width - 2 * target_size, 3 * (target_size + 0.5), target_size);
+    loadMenu(menu, targets, prefix, legendas);
+    menus.with(menu);
+    prefs.add(prefix);
+  }
   base_frame.with(menus);
 }
 

@@ -225,3 +225,21 @@ function detectClick(mouse_x, mouse_y) {
 function drawCurrentFrame() {
   drawing.draw();
 }
+
+function loadMenu(menu, targets, regex, table) {
+  let matches = table.matchRows(regex, 1);
+  matches.sort((A, B) => {
+    let res = A.getString(1).localeCompare(B.getString(1));
+    if (!res) {
+      let swap = A.getNum(0);
+      A.setNum(0, B.getNum(0));
+      B.setNum(0, swap);
+    }
+    return res;
+  })
+  for (let i = 0; i < matches.length; i++) {
+    targets.with(new Target(200, 200, 2, matches[i].getString(1), matches[i].getNum(0), true, color(255,255,255), "Arial", color(0,0,0), 18));
+    print(matches[i].getString(1));
+  }
+  menu.with(targets);
+}
