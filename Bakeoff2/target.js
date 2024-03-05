@@ -24,11 +24,23 @@ class Target {
     this.text_size = text_size;
   }
   
-  // Assumes x, y and w in pixels.
-  resize(x, y, w) {
+  // Assumes x, and y in pixels.
+  move(x, y) {
     this.x = x;
     this.y = y;
-    this.width = w;
+  }
+
+  // Assumes y in centimeters.
+  yShift(y) {
+    this.y = y;
+  }
+
+  xSize() {
+    return this.width;
+  }
+
+  ySize() {
+    return this.width;
   }
   
   // Checks if a mouse click took place
@@ -71,46 +83,63 @@ class Target {
 }
 
 class Targets {
-  constructor(x, y, x_gap, y_gap, w, h, size) {
+  constructor(x, y, x_gap, y_gap, w, h) {
     this.targets = [];
-    this.xs = [];
-    this.ys = [];
     this.x = cmToPixel(x);
     this.y = cmToPixel(y);
     this.x_gap = cmToPixel(x_gap);
     this.y_gap = cmToPixel(y_gap);
     this.width = cmToPixel(w);
     this.height = cmToPixel(h);
-    this.size = cmToPixel(size);
+    this.line_height = 0;
+    this.last_x = 0;
+    this.last_y = 0;
+  }
+
+  xSize() {
+    return this.width;
+  }
+
+  ySize() {
+    return this.height;
   }
 
   with(target) {
     let target_x;
     let target_y;
-    let last_x = this.x;
-    let last_y = this.y;
-    if (this.targets.length !== 0) {
-      last_x = this.xs[this.targets.length - 1];
-      last_y = this.ys[this.targets.length - 1];
-    } else {
-      this.xs.push(this.x);
-      this.ys.push(this.y);
-      target.resize(this.x, this.y, this.size);
+    if (this.targets.length === 0) {
+      target.move(this.x, this.y);
+      this.last_x = this.x;
+      this.last_y = this.y;
+      this.line_height = target.ySize();
       this.targets.push(target);
       return;
     }
-    if (last_x + this.size + this.x_gap <= this.x + this.width) {
-      target_x = last_x + this.size + this.x_gap;
-      target_y = last_y;
-    } else {
-      target_x = this.x;
-      target_y = last_y + this.size + this.y_gap;
-      if (last_y > this.y + this.height)
-        throw new Error("Targets::with(): height overflow");
+    target_x = this.last_x + this.targets[this.targets.length - 1].xSize() + this.x_gap;
+    if (target_x + target.xSize() > this.x + this.width) { // wrap-around case
+      target_y = this.last_y + this.line_height + this.y_gap;
+      //if (target_y + this.ySize() > this.y + this.height)
+        //throw new Error("Targets::with(): height overflow");
+      target.move(this.x, target_y);
+      this.last_x = this.x;
+      this.last_y = target_y;
+      this.line_height = target.ySize();
+      this.targets.push(target);
+      return;
     }
-    this.xs.push(target_x);
-    this.ys.push(target_y);
-    target.resize(target_x, target_y, this.size);
+    this.last_x = target_x;
+    if (this.line_height < target.ySize()) {
+      this.line_height = target.ySize();
+      target_y = this.last_y;
+      for (let i = this.targets.length; i >= 0; i--) {
+        if (i < this.last_y)
+          break;
+        this.targets[i].yShift((this.line_height - this.targets[i].ySize()) / 2);
+      }
+    } else {
+      target_y = this.last_y + (this.line_height - target.ySize()) / 2;
+    }
+    target.move(target_x, target_y);
     this.targets.push(target);
   }
 
@@ -123,8 +152,25 @@ class Targets {
     return null;
   }
   
-  resize(x, y, w) {
-    throw new Error("Frame::resize(): unsupported operation");
+  move(x, y) {
+    if (x === this.x && y === this.y)
+      return; // avoids heavy shifting
+    if (x === this.y) {
+      this.yShift(y); // yShift is a quick operation
+      return;
+    }
+    this.y = y;
+    this.x = x;
+    let aux = this.targets;
+    this.targets = [];
+    for (let i  = 0; i < aux.length; i++)
+      this.with(aux);
+  }
+
+  yShift(y) {
+    this.y = y;
+    for (let i = 0; i < aux.length; i++)
+      this.targets[i].yShift(y);
   }
 
   draw()  {
@@ -167,8 +213,20 @@ class Menu extends Frame {
     this.target = new Target(x, y, w, l, -1, false, color, font, text_color, text_size);
   }
   
-  resize(x, y, w) {
-    this.target.resize(x, y, w);
+  move(x, y) {
+    this.target.move(x, y);
+  }
+
+  yShift(y) {
+    this.target.yShift(y);
+  }
+
+  xSize() {
+    return this.target.xSize();
+  }
+
+  ySize() {
+    return this.target.ySize();
   }
 
   clicked(mouse_x, mouse_y) {
@@ -237,9 +295,13 @@ function loadMenu(menu, targets, regex, table) {
     }
     return res;
   })
+  let group;
   for (let i = 0; i < matches.length; i++) {
-    targets.with(new Target(200, 200, 2, matches[i].getString(1), matches[i].getNum(0), true, color(255,255,255), "Arial", color(0,0,0), 18));
-    print(matches[i].getString(1));
+    if ((i % 5) === 0) {
+      group = new Targets(0, 0, target_size / 20, 0, target_size * 5.2, target_size, target_size);
+      targets.with(group);
+    }
+    group.with(new Target(200, 200, target_size, matches[i].getString(1), matches[i].getNum(0), true, color(255,255,255), "Arial", color(0,0,0), 18));
   }
   menu.with(targets);
 }

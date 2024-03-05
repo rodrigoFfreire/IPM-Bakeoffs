@@ -244,7 +244,7 @@ function continueTest()
 function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
-  let menus = new Targets(target_size, screen_height - 3.3 * target_size, 1, 1, screen_width - 2 * target_size, 4 * target_size, target_size);
+  let menus = new Targets(target_size, screen_height - 4 * target_size, 1, 1, screen_width - 2 * target_size, 4 * target_size);
   let cities = legendas.getColumn(1);
   let prefs = new Set();
   cities.sort();
@@ -253,7 +253,7 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
     if (prefs.has(prefix))
       continue;
     let menu = new Menu(0, 0, target_size, prefix.slice(1), color(125, 125, 125), "Arial", color(255, 255, 255), 40, base_frame, 10, 10);
-    let targets = new Targets(target_size, screen_height - 3.3 * target_size, 0.5, 0.5, screen_width - 2 * target_size, 3 * (target_size + 0.5), target_size);
+    let targets = new Targets(target_size, screen_height - 4 * target_size, 1, 1, screen_width - target_size, 4 * target_size);
     loadMenu(menu, targets, prefix, legendas);
     menus.with(menu);
     prefs.add(prefix);
