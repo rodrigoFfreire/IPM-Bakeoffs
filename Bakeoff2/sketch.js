@@ -37,7 +37,7 @@ let screen_width; // screen width
 let screen_height; // screen height
 let target_size = 3; // sets the target size (will be converted to cm when passed to createTargets)
 
-let PROJECT_CODENAME = "React2.0"
+let PROJECT_CODENAME = "React20"
 
 let COLOR_WHITE;
 let COLOR_BLACK;
