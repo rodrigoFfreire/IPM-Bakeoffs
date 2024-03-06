@@ -295,7 +295,7 @@ function loadMenu(menu, targets, regex, table) {
   })
   let seen = new Set();
   let group;
-  let r = 0;
+  let hue = -40;
   for (let i = 0; i < matches.length; i++) {
     let pref3 = matches[i].getString(1).substring(0, 3);
     if (!seen.has(pref3)) {
@@ -306,10 +306,10 @@ function loadMenu(menu, targets, regex, table) {
       seen.add(pref3);
       group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
       targets.with(group);
-      r = (r + 20) % 255;
+      hue = (hue + 40) % 360;
     }
     let name = matches[i].getString(1);
-    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 18));
+    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), "Arial", COLOR_WHITE, 18));
   }
   menu.with(targets);
 }
