@@ -35,7 +35,7 @@ const GRID_COLUMNS        = 10;     // We divide our 80 targets in a 8x10 grid
 // Below we find out out white space we can have between 2 cm targets
 let screen_width; // screen width
 let screen_height; // screen height
-let target_size = 3; // sets the target size (will be converted to cm when passed to createTargets)
+let target_size = 2.3; // sets the target size (will be converted to cm when passed to createTargets)
 
 let PROJECT_CODENAME = "React20"
 
