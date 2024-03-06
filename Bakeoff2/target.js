@@ -293,13 +293,21 @@ function loadMenu(menu, targets, regex, table) {
     }
     return res;
   })
+  let seen = new Set();
   let group;
   for (let i = 0; i < matches.length; i++) {
-    if ((i % 5) === 0) {
-      group = new Targets(0, 0, target_size / 20, 0, target_size * 5.2, target_size, target_size);
+    let pref3 = matches[i].getString(1).substring(0, 3);
+    if (!seen.has(pref3)) {
+      let count = 1;
+      for (let j = i + 1; j < matches.length; j++)
+        if (matches[j].getString(1).substring(0, 3).localeCompare(pref3) === 0)
+          count++;
+      seen.add(pref3);
+      group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
       targets.with(group);
     }
-    group.with(new Target(200, 200, target_size, matches[i].getString(1), matches[i].getNum(0), true, COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 18));
+    let name = pref3.toUpperCase() + matches[i].getString(1).substring(3, matches[i].getString(1).length);
+    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 18));
   }
   menu.with(targets);
 }

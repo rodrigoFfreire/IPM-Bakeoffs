@@ -170,29 +170,6 @@ function mousePressed()
   if (draw_targets)
   {
     detectClick(mouseX, mouseY);
-    /*let click = menus.clicked(mouseX, mouseY);
-    if (click !== -1) {
-      if (click === trials[current_trial] + 1)
-        hits++;
-      else
-        misses++;
-      current_trial++;
-    } else {
-      menus.select(menus.clicked(mouseX, mouseY));
-    }*/
-    /*for (var i = 0; i < legendas.getRowCount(); i++)
-    {
-      // Check if the user clicked over one of the targets
-      if (targets[i].clicked(mouseX, mouseY)) 
-      {
-        // Checks if it was the correct target
-        if (targets[i].id === trials[current_trial] + 1) hits++;
-        else misses++;
-        
-        current_trial++;              // Move on to the next trial/target
-        break;
-      }
-    }*/
     
     // Check if the user has completed all trials
     if (current_trial === NUM_OF_TRIALS)
@@ -214,26 +191,6 @@ function mousePressed()
     else if (current_trial === 1) testStartTime = millis(); 
   }
 }
-
-// Mouse was moved
-/*function mouseMoved() 
-{
-  // Only look for mouse releases during the actual test
-  // (i.e., during target selections)
-  if (draw_targets)
-  {
-    let display = "";
-    for (var i = 0; i < legendas.getRowCount(); i++)
-    {
-      // Check if the user hovered over one of the targets
-      if (targets[i].clicked(mouseX, mouseY)) 
-      {
-        display = targets[i].label;
-      }
-    }
-    hoverDisplay = display;
-  }
-}*/
 
 // Evoked after the user starts its second (and last) attempt
 function continueTest()
@@ -262,11 +219,12 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
   let prefs = new Set();
   cities.sort();
   let outlier_cities = legendas.matchRows("^By|^Bn|^Bl", 1);
-  print(outlier_cities);
+
   for (let i = 0; i < outlier_cities.length; i++) {
     outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 18));
     prefs.add(outlier_cities[i].getString(1).substring(0, 2));
   }
+
   for (let i = 0; i < cities.length; i++) {
     let prefix = cities[i].substring(0, 2);
     if (prefs.has(prefix))
@@ -275,8 +233,9 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
       prefix += "|Bé";
       prefs.add("Bé");
     }
+
     let menu = new Menu(0, 0, target_size, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 40, base_frame, 10, 10);
-    let targets = new Targets(target_size, screen_height - 4 * target_size, 1, 1, screen_width - target_size, 4 * target_size);
+    let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
     loadMenu(menu, targets, prefix, legendas);
     menus.with(menu);
     prefs.add(prefix.substring(0, 2));
