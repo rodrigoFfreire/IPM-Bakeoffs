@@ -144,7 +144,7 @@ function printAndSavePerformance()
     }
     
     // Adds user performance results
-    let db_ref = database.ref('G' + GROUP_NUMBER + ' | ' + PROJECT_CODENAME);
+    let db_ref = database.ref('G' + GROUP_NUMBER + 'V' + PROJECT_CODENAME);
     db_ref.push(attempt_data);
   }
 }
