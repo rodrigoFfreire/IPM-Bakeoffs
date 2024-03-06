@@ -35,6 +35,10 @@ class Target {
     this.y = y;
   }
 
+  x() {
+    return this.x;
+  }
+
   xSize() {
     return this.width;
   }
@@ -96,6 +100,10 @@ class Targets {
     this.last_y = 0;
   }
 
+  x() {
+    return this.x;
+  }
+
   xSize() {
     return this.width;
   }
@@ -134,7 +142,7 @@ class Targets {
       for (let i = this.targets.length; i >= 0; i--) {
         if (i < this.last_y)
           break;
-        this.targets[i].yShift((this.line_height - this.targets[i].ySize()) / 2);
+        this.targets[i].move(this.targets[i].x(), this.last_y + (this.line_height - this.targets[i].ySize()) / 2);
       }
     } else {
       target_y = this.last_y + (this.line_height - target.ySize()) / 2;
@@ -155,22 +163,12 @@ class Targets {
   move(x, y) {
     if (x === this.x && y === this.y)
       return; // avoids heavy shifting
-    if (x === this.y) {
-      this.yShift(y); // yShift is a quick operation
-      return;
-    }
     this.y = y;
     this.x = x;
     let aux = this.targets;
     this.targets = [];
     for (let i  = 0; i < aux.length; i++)
-      this.with(aux);
-  }
-
-  yShift(y) {
-    this.y = y;
-    for (let i = 0; i < aux.length; i++)
-      this.targets[i].yShift(y);
+      this.with(aux[i]);
   }
 
   draw()  {
@@ -217,8 +215,8 @@ class Menu extends Frame {
     this.target.move(x, y);
   }
 
-  yShift(y) {
-    this.target.yShift(y);
+  x() {
+    return this.x;
   }
 
   xSize() {
