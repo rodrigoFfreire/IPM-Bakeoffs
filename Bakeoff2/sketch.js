@@ -6,7 +6,7 @@
 // p5.js reference: https://p5js.org/reference/
 
 // Database (CHANGE THESE!)
-const GROUP_NUMBER        = 0;      // Add your group number here as an integer (e.g., 2, 3)
+const GROUP_NUMBER        = 51;      // Add your group number here as an integer (e.g., 2, 3)
 const RECORD_TO_FIREBASE  = false;  // Set to 'true' to record user results to Firebase
 
 // Pixel density and setup variables (DO NOT CHANGE!)
@@ -36,6 +36,8 @@ const GRID_COLUMNS        = 10;     // We divide our 80 targets in a 8x10 grid
 let screen_width; // screen width
 let screen_height; // screen height
 let target_size = 3; // sets the target size (will be converted to cm when passed to createTargets)
+
+let PROJECT_CODENAME = "React2.0"
 
 // Ensures important data is loaded before the program starts
 function preload()
@@ -131,7 +133,7 @@ function printAndSavePerformance()
         accuracy:           accuracy,
         attempt_duration:   test_time,
         time_per_target:    time_per_target,
-        target_w_penalty:   target_w_penalty,
+        target_w_penalty:   target_w_penalty,          
   }
   
   // Sends data to DB (DO NOT CHANGE!)
@@ -145,7 +147,7 @@ function printAndSavePerformance()
     }
     
     // Adds user performance results
-    let db_ref = database.ref('G' + GROUP_NUMBER);
+    let db_ref = database.ref('G' + GROUP_NUMBER + ' | ' + PROJECT_CODENAME);
     db_ref.push(attempt_data);
   }
 }
