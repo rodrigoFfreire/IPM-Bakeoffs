@@ -245,20 +245,32 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
   let menus = new Targets(target_size, screen_height - 4 * target_size, 1, 1, screen_width - 2 * target_size, 4 * target_size);
+  let outliers = new Targets(screen_width / 2 - target_size, target_size, 1.5, 0, 6 * target_size, 1.5 * target_size);
   let cities = legendas.getColumn(1);
   let prefs = new Set();
   cities.sort();
+  let outlier_cities = legendas.matchRows("^By|^Bn|^Bl", 1);
+  print(outlier_cities);
+  for (let i = 0; i < outlier_cities.length; i++) {
+    outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, color(255, 255, 255), "Arial", color(0, 0, 0), 18));
+    prefs.add(outlier_cities[i].getString(1).substring(0, 2));
+  }
   for (let i = 0; i < cities.length; i++) {
     let prefix = cities[i].substring(0, 2);
     if (prefs.has(prefix))
       continue;
-    let menu = new Menu(0, 0, target_size, prefix.slice(1), color(125, 125, 125), "Arial", color(255, 255, 255), 40, base_frame, 10, 10);
+    if (prefix.localeCompare("Be") === 0) {
+      prefix += "|Bé";
+      prefs.add("Bé");
+    }
+    let menu = new Menu(0, 0, target_size, prefix.substring(0, 2).toUpperCase(), color(125, 125, 125), "Arial", color(255, 255, 255), 40, base_frame, 10, 10);
     let targets = new Targets(target_size, screen_height - 4 * target_size, 1, 1, screen_width - target_size, 4 * target_size);
     loadMenu(menu, targets, prefix, legendas);
     menus.with(menu);
-    prefs.add(prefix);
+    prefs.add(prefix.substring(0, 2));
   }
   base_frame.with(menus);
+  base_frame.with(outliers);
 }
 
 // Is invoked when the canvas is resized (e.g., when we go fullscreen)

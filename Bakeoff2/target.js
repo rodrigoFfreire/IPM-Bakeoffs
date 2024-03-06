@@ -283,7 +283,7 @@ function drawCurrentFrame() {
 }
 
 function loadMenu(menu, targets, regex, table) {
-  let matches = table.matchRows(regex, 1);
+  let matches = table.matchRows("^" + regex, 1);
   matches.sort((A, B) => {
     let res = A.getString(1).localeCompare(B.getString(1));
     if (!res) {
