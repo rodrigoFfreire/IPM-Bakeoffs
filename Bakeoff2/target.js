@@ -299,7 +299,7 @@ function loadMenu(menu, targets, regex, table) {
       group = new Targets(0, 0, target_size / 20, 0, target_size * 5.2, target_size, target_size);
       targets.with(group);
     }
-    group.with(new Target(200, 200, target_size, matches[i].getString(1), matches[i].getNum(0), true, color(255,255,255), "Arial", color(0,0,0), 18));
+    group.with(new Target(200, 200, target_size, matches[i].getString(1), matches[i].getNum(0), true, COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 18));
   }
   menu.with(targets);
 }

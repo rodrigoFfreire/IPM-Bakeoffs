@@ -39,6 +39,10 @@ let target_size = 3; // sets the target size (will be converted to cm when passe
 
 let PROJECT_CODENAME = "React2.0"
 
+let COLOR_WHITE;
+let COLOR_BLACK;
+let COLOR_DEFAULT_BUTTON;
+
 // Ensures important data is loaded before the program starts
 function preload()
 {
@@ -49,10 +53,16 @@ function preload()
 // Runs once at the start
 function setup()
 {
-  createCanvas(700, 500);    // window size in px before we go into fullScreen()
-  frameRate(60);             // frame rate (DO NOT CHANGE!)
-  randomizeTrials();         // randomize the trial order at the start of execution
-  drawUserIDScreen();        // draws the user start-up screen (student ID and display size)
+  colorMode(HSB, 360, 100, 100); // Use HSB color
+  COLOR_WHITE = color(0, 0, 100);
+  COLOR_BLACK = color(0, 0, 0);
+  COLOR_DEFAULT_BUTTON = color(0, 0, 50);
+
+  createCanvas(700, 500);        // window size in px before we go into fullScreen()
+  frameRate(60);                 // frame rate (DO NOT CHANGE!)
+  randomizeTrials();             // randomize the trial order at the start of execution
+  drawUserIDScreen();            // draws the user start-up screen (student ID and display size)
+  
 }
 
 // Runs every frame and redraws the screen
@@ -61,11 +71,11 @@ function draw()
   if (draw_targets && attempt < 2)
   {
     // The user is interacting with the 6x3 target grid
-    background(color(0,0,0));        // sets background to black
+    background(COLOR_BLACK);        // sets background to black
     
     // Print trial count at the top left-corner of the canvas
     textFont("Arial", 16);
-    fill(color(255,255,255));
+    fill(COLOR_WHITE);
     textAlign(LEFT);
     text("Trial " + (current_trial + 1) + " of " + trials.length, 50, 20);
     
@@ -85,11 +95,11 @@ function draw()
     // Draws the target label to be selected in the current trial. We include 
     // a black rectangle behind the trial label for optimal contrast in case 
     // you change the background colour of the sketch (DO NOT CHANGE THESE!)
-    fill(color(0,0,0));
+    fill(COLOR_BLACK);
     rect(0, height - 40, width, 40);
  
     textFont("Arial", 20);
-    fill(color(255,255,255));
+    fill(COLOR_WHITE);
     textAlign(CENTER);
     text(legendas.getString(trials[current_trial],1), width/2, height - 20);
   }
@@ -107,8 +117,8 @@ function printAndSavePerformance()
   let timestamp         = day() + "/" + month() + "/" + year() + "  " + hour() + ":" + minute() + ":" + second();
   
   textFont("Arial", 18);
-  background(color(0,0,0));   // clears screen
-  fill(color(255,255,255));   // set text fill color to white
+  background(COLOR_BLACK);   // clears screen
+  fill(COLOR_WHITE);   // set text fill color to white
   textAlign(LEFT);
   text(timestamp, 10, 20);    // display time on screen (top-left corner)
   
@@ -254,7 +264,7 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
   let outlier_cities = legendas.matchRows("^By|^Bn|^Bl", 1);
   print(outlier_cities);
   for (let i = 0; i < outlier_cities.length; i++) {
-    outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, color(255, 255, 255), "Arial", color(0, 0, 0), 18));
+    outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 18));
     prefs.add(outlier_cities[i].getString(1).substring(0, 2));
   }
   for (let i = 0; i < cities.length; i++) {
@@ -265,7 +275,7 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
       prefix += "|Bé";
       prefs.add("Bé");
     }
-    let menu = new Menu(0, 0, target_size, prefix.substring(0, 2).toUpperCase(), color(125, 125, 125), "Arial", color(255, 255, 255), 40, base_frame, 10, 10);
+    let menu = new Menu(0, 0, target_size, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 40, base_frame, 10, 10);
     let targets = new Targets(target_size, screen_height - 4 * target_size, 1, 1, screen_width - target_size, 4 * target_size);
     loadMenu(menu, targets, prefix, legendas);
     menus.with(menu);
