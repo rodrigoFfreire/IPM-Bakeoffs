@@ -56,7 +56,7 @@ function setup()
   colorMode(HSB, 360, 100, 100); // Use HSB color
   COLOR_WHITE = color(0, 0, 100);
   COLOR_BLACK = color(0, 0, 0);
-  COLOR_DEFAULT_BUTTON = color(0, 0, 50);
+  COLOR_DEFAULT_BUTTON = color(0, 0, 30);
 
   createCanvas(700, 500);        // window size in px before we go into fullScreen()
   frameRate(60);                 // frame rate (DO NOT CHANGE!)
