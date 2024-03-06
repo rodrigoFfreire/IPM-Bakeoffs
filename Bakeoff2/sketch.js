@@ -34,6 +34,8 @@ const GRID_COLUMNS        = 13;     // We divide our 80 targets in a 8x10 grid
 
 let hoverDisplay = ""; // Display 
 
+let PROJECT_CODENAME = "Grid+Color"
+
 // Ensures important data is loaded before the program starts
 function preload()
 {
@@ -142,7 +144,7 @@ function printAndSavePerformance()
     }
     
     // Adds user performance results
-    let db_ref = database.ref('G' + GROUP_NUMBER);
+    let db_ref = database.ref('G' + GROUP_NUMBER + ' | ' + PROJECT_CODENAME);
     db_ref.push(attempt_data);
   }
 }
