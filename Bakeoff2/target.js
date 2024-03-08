@@ -318,7 +318,7 @@ function loadMenu(menu, targets, regex, table) {
       B.setNum(0, swap);
     }
     return res;
-  })
+  });
   let seen = new Set();
   let group;
   let hue = -40;
@@ -332,6 +332,47 @@ function loadMenu(menu, targets, regex, table) {
       seen.add(pref3);
       //group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
       group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref3, DEFAULT_MENU_FONT, 18, COLOR_WHITE);
+      targets.with(group);
+      hue = (hue + 40) % 360;
+    }
+    let name = matches[i].getString(1);
+    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, 18));
+  }
+  menu.with(targets);
+}
+
+function invertedLoadMenu(menu, targets, regex, table) {
+  let matches;
+  if (regex.localeCompare("á") === 0) {
+    matches = table.matchRows("a$|á$", 1);
+  } if (regex.localeCompare("é") === 0) {
+    matches = table.matchRows("e$|é$", 1);
+  } else {
+    matches = table.matchRows(regex + "$", 1);
+  }
+  matches = table.matchRows(regex + "$", 1);
+  matches.sort((A, B) => {
+    let res = A.getString(1).localeCompare(B.getString(1));
+    if (!res) {
+      let swap = A.getNum(0);
+      A.setNum(0, B.getNum(0));
+      B.setNum(0, swap);
+    }
+    return res;
+  });
+  let seen = new Set();
+  let group;
+  let hue = -40;
+  for (let i = 0; i < matches.length; i++) {
+    let pref2 = matches[i].getString(1).substring(0, 2);
+    if (!seen.has(pref2)) {
+      let count = 1;
+      for (let j = i + 1; j < matches.length; j++)
+        if (matches[j].getString(1).substring(0, 2).localeCompare(pref2) === 0)
+          count++;
+      seen.add(pref2);
+      //group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
+      group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref2, DEFAULT_MENU_FONT, 18, COLOR_WHITE);
       targets.with(group);
       hue = (hue + 40) % 360;
     }

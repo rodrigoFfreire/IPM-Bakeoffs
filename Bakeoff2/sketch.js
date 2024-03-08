@@ -219,9 +219,9 @@ function continueTest()
 function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
-  let menus = new Targets(target_size, screen_height - 4 * target_size, 1, 1, screen_width - 2 * target_size, 4 * target_size);
+  let menus = new Targets(target_size, screen_height - 3 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
   //let outliers = new Targets(target_size, screen_height - target_size * 1.5, 1, 1, screen_width - 2 * target_size, 4 * target_size);
-  let outliers = new NamedTargets(target_size, screen_height - target_size * 1.5, 1, 1, screen_width - 2 * target_size, 4 * target_size, "Others", DEFAULT_MENU_FONT, 18, COLOR_WHITE);
+  let outliers = new NamedTargets(target_size, screen_height - target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size, "Others", DEFAULT_MENU_FONT, 18, COLOR_WHITE);
   let cities = legendas.getColumn(1);
   let prefs = new Set();
   cities.sort();
@@ -241,7 +241,7 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
       prefs.add("Bé");
     }
 
-    let menu = new Menu(0, 0, target_size, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 40, base_frame, 10, 10);
+    let menu = new Menu(0, 0, target_size * 1.2, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 72, base_frame, 10, 10);
     let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
     loadMenu(menu, targets, prefix, legendas);
     menus.with(menu);
@@ -250,6 +250,32 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
   base_frame.with(menus);
   base_frame.with(outliers);
 }
+
+function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
+{
+  setupFrames(horizontal_gap, vertical_gap);
+  let menus = new Targets(target_size, screen_height - 3 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
+  let sufixes = new Set();
+  sufixes.add("é");
+  sufixes.add("á");
+  let cities = legendas.getColumn(1);
+  cities.sort((A, B) => {
+    let res = A.slice(-1).localeCompare(B.slice(-1));
+    return res;
+  });
+  for (let i = 0; i < cities.length; i++) {
+    if (sufixes.has(cities[i].slice(-1)))
+      continue;
+    let menu = new Menu(0, 0, target_size * 1.2, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 72, base_frame, 10, 10);
+    let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
+    invertedLoadMenu(menu, targets, cities[i].slice(-1), legendas)
+    menus.with(menu);
+    sufixes.add(cities[i].slice(-1));
+  }
+  base_frame.with(menus);
+}
+
+
 
 // Is invoked when the canvas is resized (e.g., when we go fullscreen)
 function windowResized() 
@@ -274,10 +300,10 @@ function windowResized()
     
     // Creates and positions the UI targets according to the white space defined above (in cm!)
     // 80 represent some margins around the display (e.g., for text)
-    createTargets(target_size, horizontal_gap, vertical_gap);
+    //createTargets(target_size, horizontal_gap, vertical_gap);
+    invertedCreateTargets(target_size, horizontal_gap, vertical_gap);
 
     // Starts drawing targets immediately after we go fullscreen
     draw_targets = true;
   }
 }
-
