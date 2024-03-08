@@ -33,11 +33,20 @@ function drawUserIDScreen()
   display_size_label = createDiv("Display size in inches");         // create label
   display_size_label.id('input');
   display_size_label.position(10, display_size_pos_y_offset);
+
+  // 3. Instructions
+  instructions_label = createDiv("INSTRUÇÕES:<br>\
+                                  Este protótipo utiliza submenus que agrupam palavras de prefixos de 2 letras de forma alfabética.<br>\
+                                  Para sair de um submenu clique no background preto.<br>\
+                                  Existem 3 cidades que não estão agrupadas por submenus.<br>\
+                                  Boa sorte!");
+  instructions_label.id('instructions');
+  instructions_label.position(15, height/2.3);
   
-  // 3. Start button
+  // 4. Start button
   start_button = createButton('START');
   start_button.mouseReleased(startTest);
-  start_button.position(width/2 - start_button.size().width/2, height/2 - start_button.size().height/2);
+  start_button.position(width/2 - start_button.size().width/2, height/1.2 - start_button.size().height/2);
 }
 
 // Verifies if the student ID is a number, and within an acceptable range

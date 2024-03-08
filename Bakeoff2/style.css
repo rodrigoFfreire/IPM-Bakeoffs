@@ -22,3 +22,12 @@ canvas
   font-family: 'Arial';
   color: white;
 }
+
+#instructions
+{
+  font-size: 16px;
+  font-family: 'Arial';
+  color: white;
+  text-align: left;
+  width: 690px;
+}
