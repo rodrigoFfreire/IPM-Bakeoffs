@@ -343,14 +343,13 @@ function loadMenu(menu, targets, regex, table) {
 
 function invertedLoadMenu(menu, targets, regex, table) {
   let matches;
-  if (regex.localeCompare("á") === 0) {
+  if (regex.localeCompare("a") === 0) {
     matches = table.matchRows("a$|á$", 1);
-  } if (regex.localeCompare("é") === 0) {
+  } else if (regex.localeCompare("e") === 0) {
     matches = table.matchRows("e$|é$", 1);
   } else {
     matches = table.matchRows(regex + "$", 1);
   }
-  matches = table.matchRows(regex + "$", 1);
   matches.sort((A, B) => {
     let res = A.getString(1).localeCompare(B.getString(1));
     if (!res) {
