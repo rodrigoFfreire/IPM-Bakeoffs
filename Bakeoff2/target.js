@@ -174,6 +174,14 @@ class Targets {
   draw()  {
     for (let i = 0; i < this.targets.length; i++)
       this.targets[i].draw();
+    if (DEBUG) {
+      beginShape();
+      stroke(color(0, 100, 0));
+      strokeWeight(3);
+      noFill();
+      rect(this.x, this.y, this.width, this.height);
+      endShape();
+    }
   }
 
   forward() {
@@ -182,6 +190,24 @@ class Targets {
 
   back() {
     throw new Error("Targets::back(): unsupported operation");
+  }
+}
+
+class NamedTargets extends Targets {
+  constructor(x, y, x_gap, y_gap, w, h, label, font, font_size, font_color) {
+    super(x, y, x_gap, y_gap, w, h);
+    this.label = label;
+    this.font = font;
+    this.font_size = font_size;
+    this.font_color = font_color;
+  }
+
+  draw() {
+    super.draw();
+    textFont(this.font, this.font_size);
+    fill(this.font_color);
+    textAlign(CENTER);
+    text(this.label, this.x, this.y);
   }
 }
 
@@ -304,12 +330,13 @@ function loadMenu(menu, targets, regex, table) {
         if (matches[j].getString(1).substring(0, 3).localeCompare(pref3) === 0)
           count++;
       seen.add(pref3);
-      group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
+      //group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
+      group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref3, DEFAULT_MENU_FONT, 18, COLOR_WHITE);
       targets.with(group);
       hue = (hue + 40) % 360;
     }
     let name = matches[i].getString(1);
-    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), "Arial", COLOR_WHITE, 18));
+    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, 18));
   }
   menu.with(targets);
 }

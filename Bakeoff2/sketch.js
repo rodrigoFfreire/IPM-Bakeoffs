@@ -42,6 +42,9 @@ let PROJECT_CODENAME = "React20"
 let COLOR_WHITE;
 let COLOR_BLACK;
 let COLOR_DEFAULT_BUTTON;
+let DEFAULT_TARGET_FONT;
+let DEFAULT_MENU_FONT;
+let DEBUG = true;
 
 // Ensures important data is loaded before the program starts
 function preload()
@@ -57,6 +60,9 @@ function setup()
   COLOR_WHITE = color(0, 0, 100);
   COLOR_BLACK = color(0, 0, 0);
   COLOR_DEFAULT_BUTTON = color(0, 0, 30);
+  DEFAULT_TARGET_FONT = "Serif";
+  DEFAULT_MENU_FONT = "Serif";
+  DEBUG = false;
 
   createCanvas(700, 500);        // window size in px before we go into fullScreen()
   frameRate(60);                 // frame rate (DO NOT CHANGE!)
@@ -214,14 +220,15 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
   let menus = new Targets(target_size, screen_height - 4 * target_size, 1, 1, screen_width - 2 * target_size, 4 * target_size);
-  let outliers = new Targets(screen_width / 2 - target_size, target_size, 1.5, 0, 6 * target_size, 1.5 * target_size);
+  //let outliers = new Targets(target_size, screen_height - target_size * 1.5, 1, 1, screen_width - 2 * target_size, 4 * target_size);
+  let outliers = new NamedTargets(target_size, screen_height - target_size * 1.5, 1, 1, screen_width - 2 * target_size, 4 * target_size, "Others", DEFAULT_MENU_FONT, 18, COLOR_WHITE);
   let cities = legendas.getColumn(1);
   let prefs = new Set();
   cities.sort();
   let outlier_cities = legendas.matchRows("^By|^Bn|^Bl", 1);
 
   for (let i = 0; i < outlier_cities.length; i++) {
-    outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 18));
+    outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, COLOR_DEFAULT_BUTTON, DEFAULT_TARGET_FONT, COLOR_WHITE, 18));
     prefs.add(outlier_cities[i].getString(1).substring(0, 2));
   }
 
@@ -234,7 +241,7 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
       prefs.add("Bé");
     }
 
-    let menu = new Menu(0, 0, target_size, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, "Arial", COLOR_WHITE, 40, base_frame, 10, 10);
+    let menu = new Menu(0, 0, target_size, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 40, base_frame, 10, 10);
     let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
     loadMenu(menu, targets, prefix, legendas);
     menus.with(menu);
