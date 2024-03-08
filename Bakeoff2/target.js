@@ -331,12 +331,12 @@ function loadMenu(menu, targets, regex, table) {
           count++;
       seen.add(pref3);
       //group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
-      group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref3, DEFAULT_MENU_FONT, 18, COLOR_WHITE);
+      group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref3, DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
       targets.with(group);
       hue = (hue + 40) % 360;
     }
     let name = matches[i].getString(1);
-    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, 18));
+    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
   }
   menu.with(targets);
 }
@@ -371,12 +371,12 @@ function invertedLoadMenu(menu, targets, regex, table) {
           count++;
       seen.add(pref2);
       //group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
-      group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref2, DEFAULT_MENU_FONT, 18, COLOR_WHITE);
+      group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref2, DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
       targets.with(group);
       hue = (hue + 40) % 360;
     }
     let name = matches[i].getString(1);
-    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, 18));
+    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
   }
   menu.with(targets);
 }

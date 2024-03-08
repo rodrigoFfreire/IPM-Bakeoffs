@@ -30,12 +30,14 @@ let attempt               = 0;      // users complete each test twice to account
 // Target list and layout variables
 const GRID_ROWS           = 8;      // We divide our 80 targets in a 8x10 grid
 const GRID_COLUMNS        = 10;     // We divide our 80 targets in a 8x10 grid
+const TEXT_FACTOR         = 274.827183618;
 
 // Make your decisions in 'cm', so that targets have the same size for all participants
 // Below we find out out white space we can have between 2 cm targets
 let screen_width; // screen width
 let screen_height; // screen height
 let target_size = 2.3; // sets the target size (will be converted to cm when passed to createTargets)
+let target_text_size;
 
 let PROJECT_CODENAME = "React20"
 
@@ -221,14 +223,14 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
   setupFrames(horizontal_gap, vertical_gap);
   let menus = new Targets(target_size, screen_height - 3 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
   //let outliers = new Targets(target_size, screen_height - target_size * 1.5, 1, 1, screen_width - 2 * target_size, 4 * target_size);
-  let outliers = new NamedTargets(target_size, screen_height - target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size, "Others", DEFAULT_MENU_FONT, 18, COLOR_WHITE);
+  let outliers = new NamedTargets(target_size, screen_height - target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size, "Others", DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
   let cities = legendas.getColumn(1);
   let prefs = new Set();
   cities.sort();
   let outlier_cities = legendas.matchRows("^By|^Bn|^Bl", 1);
 
   for (let i = 0; i < outlier_cities.length; i++) {
-    outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, COLOR_DEFAULT_BUTTON, DEFAULT_TARGET_FONT, COLOR_WHITE, 18));
+    outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, COLOR_DEFAULT_BUTTON, DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
     prefs.add(outlier_cities[i].getString(1).substring(0, 2));
   }
 
@@ -297,6 +299,8 @@ function windowResized()
     let horizontal_gap = 2;
     
     let vertical_gap = 2;
+
+    TARGET_TEXT_SIZE = Math.floor((TEXT_FACTOR / display.diagonal) - 0.3);
     
     // Creates and positions the UI targets according to the white space defined above (in cm!)
     // 80 represent some margins around the display (e.g., for text)
