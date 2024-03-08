@@ -176,7 +176,7 @@ class Targets {
       this.targets[i].draw();
     if (DEBUG) {
       beginShape();
-      stroke(color(0, 100, 0));
+      stroke(color(6, 82, 58));
       strokeWeight(3);
       noFill();
       rect(this.x, this.y, this.width, this.height);
@@ -207,7 +207,7 @@ class NamedTargets extends Targets {
     textFont(this.font, this.font_size);
     fill(this.font_color);
     textAlign(CENTER);
-    text(this.label, this.x, this.y);
+    text(this.label, this.x, this.y - this.line_height / 2);
   }
 }
 

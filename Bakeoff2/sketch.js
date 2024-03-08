@@ -44,7 +44,7 @@ let COLOR_BLACK;
 let COLOR_DEFAULT_BUTTON;
 let DEFAULT_TARGET_FONT;
 let DEFAULT_MENU_FONT;
-let DEBUG = true;
+let DEBUG;
 
 // Ensures important data is loaded before the program starts
 function preload()
