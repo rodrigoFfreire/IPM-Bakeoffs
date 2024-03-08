@@ -2,6 +2,7 @@
 
 let student_ID_form, display_size_form, start_button;                  // Initial input variables
 let student_ID, display_size;                                          // User input parameters
+let instructions_label;                                                // Instructions
 
 // Prints the initial UI that prompts that ask for student ID and screen size
 function drawUserIDScreen()
@@ -86,6 +87,7 @@ function startTest()
     student_ID_label.remove();
     display_size_form.remove();
     display_size_label.remove();
+    instructions_label.remove();
     start_button.remove();  
 
     // Goes fullscreen and starts test
