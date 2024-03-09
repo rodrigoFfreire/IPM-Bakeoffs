@@ -30,7 +30,8 @@ let attempt               = 0;      // users complete each test twice to account
 // Target list and layout variables
 const GRID_ROWS           = 8;      // We divide our 80 targets in a 8x10 grid
 const GRID_COLUMNS        = 10;     // We divide our 80 targets in a 8x10 grid
-const TEXT_FACTOR         = 274.827183618;
+const TEXT_FACTOR_A       = 274.827183618;
+const TEXT_FACTOR_C       = 0;
 
 // Make your decisions in 'cm', so that targets have the same size for all participants
 // Below we find out out white space we can have between 2 cm targets
@@ -300,7 +301,8 @@ function windowResized()
     
     let vertical_gap = 2;
 
-    TARGET_TEXT_SIZE = Math.floor((TEXT_FACTOR / display.diagonal) - 0.3);
+    target_text_size = Math.floor((TEXT_FACTOR_A / display.diagonal) + TEXT_FACTOR_C);
+    console.log("Calculated text size:" + target_text_size);
     
     // Creates and positions the UI targets according to the white space defined above (in cm!)
     // 80 represent some margins around the display (e.g., for text)
