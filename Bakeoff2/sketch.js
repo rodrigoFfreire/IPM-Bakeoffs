@@ -40,7 +40,7 @@ let screen_height; // screen height
 let target_size = 2.3; // sets the target size (will be converted to cm when passed to createTargets)
 let target_text_size;
 
-let PROJECT_CODENAME = "React20"
+let PROJECT_CODENAME = "React20LastLetter"
 
 let COLOR_WHITE;
 let COLOR_BLACK;
