@@ -36,10 +36,16 @@ function drawUserIDScreen()
   display_size_label.position(10, display_size_pos_y_offset);
 
   // 3. Instructions
-  instructions_label = createDiv("INSTRUÇÕES:<br>\
+  /*instructions_label = createDiv("INSTRUÇÕES:<br>\
                                   Este protótipo utiliza submenus que agrupam palavras de prefixos de 2 letras de forma alfabética.<br>\
                                   Para sair de um submenu clique no background preto.<br>\
                                   Existem 3 cidades que não estão agrupadas por submenus.<br>\
+                                  Boa sorte!");*/
+  instructions_label = createDiv("INSTRUÇÕES:<br>\
+                                  Objetivo: clicar no botão com a cidade que aparece na parte inferior do ecrã.<br>\
+                                  Este protótipo utiliza submenus que agrupam palavras com a mesma letra final.<br>\
+                                  Por exemplo: Bacolod e Bialogard estão no submenu D, mas Braga está no submenu A.<br>\
+                                  Para sair de um submenu clique no background preto.<br>\
                                   Boa sorte!");
   instructions_label.id('instructions');
   instructions_label.position(15, height/2.3);

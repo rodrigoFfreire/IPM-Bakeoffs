@@ -257,7 +257,8 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
 function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
-  let menus = new Targets(target_size, screen_height - 3 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
+  //let menus = new Targets(target_size, screen_height - 3 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
+  let menus = new Targets(target_size, screen_height - 4 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
   let sufixes = new Set();
   sufixes.add("é");
   sufixes.add("á");
