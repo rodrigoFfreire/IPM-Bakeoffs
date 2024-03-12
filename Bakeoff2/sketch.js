@@ -219,6 +219,33 @@ function continueTest()
 }
 
 // Creates and positions the UI targets
+function groupTargets(target_size, horizontal_gap, vertical_gap) {
+  setupFrames(horizontal_gap, vertical_gap);
+  let cities = legendas.getColumn(1);
+  let prefs = new Set();
+  cities.sort();
+  for (let i = 0; i < cities.length; i++) {
+    let prefix = cities[i].substring(0, 2);
+    if (prefs.has(prefix)) continue;
+    if (prefix.localeCompare("Be") === 0) {
+      prefix += "|Bé";
+      prefs.add("Bé");
+    }
+    let group = new Group(0.75, 0.75);
+    let targets = new Targets(
+      target_size,
+      target_size,
+      0.5,
+      0.25,
+      screen_width - 2 * target_size,
+      3 * target_size
+    );
+    loadGroup(group, targets, prefix, legendas);
+    prefs.add(prefix.substring(0, 2));
+    base_frame.with(group);
+  }
+}
+
 function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
