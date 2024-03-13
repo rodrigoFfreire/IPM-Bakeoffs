@@ -8,7 +8,6 @@ function cmToPixel(cm) {
   return cm * PPCM;
 }
 
-// Target class (position and width)
 class Target {
   constructor(x, y, w, l, id, objective, fill_color, font, text_color, text_size)
   {
@@ -60,7 +59,7 @@ class Target {
   draw() {
     // Draw target
     fill(this.fill_color);
-    circle(this.x, this.y, this.width);
+    rect(this.x - this.width/2, this.y - this.width/2.4, this.width, this.width/1.6);
   
     // Draw label
     textFont(this.font, this.text_size);
@@ -68,6 +67,8 @@ class Target {
     fill(this.text_color);
     textAlign(CENTER);
     text(this.label, this.x, this.y);
+    textFont(this.font, this.text_size + 10);
+    text(this.label.charAt(this.label.length - 1).toUpperCase(), this.x, this.y - this.width / 4.5);
   }
 
   forward() {

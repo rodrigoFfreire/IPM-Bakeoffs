@@ -37,7 +37,7 @@ const TEXT_FACTOR_C       = 0;
 // Below we find out out white space we can have between 2 cm targets
 let screen_width; // screen width
 let screen_height; // screen height
-let target_size = 2.3; // sets the target size (will be converted to cm when passed to createTargets)
+let target_size = 2.1; // sets the target size (will be converted to cm when passed to createTargets)
 let target_text_size;
 
 let PROJECT_CODENAME = "React20LastLetter"
@@ -217,25 +217,24 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
     let res = A.slice(-1).localeCompare(B.slice(-1));
     return res;
   });
-  loadRegex(base_frame, 2, 2, 12 * target_size, 2.5 * target_size, "a$|á$", legendas);
-  loadRegex(base_frame, 8, 5, 5 * target_size, 6 * target_size, "d$", legendas);
-  loadRegex(base_frame, 18, 5, 5 * target_size, 6 * target_size, "e$|é$", legendas);
-  loadRegex(base_frame, 2, 8, 5 * target_size, 6 * target_size, "g$", legendas);
-  loadRegex(base_frame, 12, 8, 5 * target_size, 6 * target_size, "g$", legendas);
-  //loadRegex(base_frame, 10, 9.5, 5 * target_size, 6 * target_size, "h$", legendas);
-  //loadRegex(base_frame, 16, 12, 8 * target_size, 2 * target_size, "i$", legendas);
-  //loadRegex(base_frame, 16, 14.5, 7 * target_size, 2 * target_size, "k$", legendas);
-  //loadRegex(base_frame, 2, 9.5, 5 * target_size, 6 * target_size, "l$", legendas);
-  //loadRegex(base_frame, 2, 12, 5 * target_size, 6 * target_size, "m$", legendas);
-  //loadRegex(base_frame, 2, 14.5, 5 * target_size, 6 * target_size, "n$", legendas);
-  //loadRegex(base_frame, 16, 9.5, 5 * target_size, 6 * target_size, "o$", legendas);
-  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "r$", legendas);
-  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "s$", legendas);
-  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "t$", legendas);
-  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "u$", legendas);
-  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "v$", legendas);
-  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "y$", legendas);
-  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "z$", legendas);
+  loadRegex(base_frame, 1.25, 1.5, 13.1 * target_size, 2.5 * target_size, "a$|á$", legendas);
+  loadRegex(base_frame, 1.25, 3.5, 5 * target_size, 6 * target_size, "d$", legendas);
+  loadRegex(base_frame, 10.25, 3.5, 5 * target_size, 6 * target_size, "e$|é$", legendas);
+  loadRegex(base_frame, 19.25, 3.5, 5 * target_size, 6 * target_size, "g$", legendas);
+  loadRegex(base_frame, 27.9, 3.5, 5 * target_size, 6 * target_size, "h$", legendas);
+  loadRegex(base_frame, 1.25, 5.5, 8 * target_size, 2 * target_size, "i$", legendas);
+  loadRegex(base_frame, 14.625, 5.5, 7 * target_size, 2 * target_size, "k$", legendas);
+  loadRegex(base_frame, 23.625, 5.5, 5 * target_size, 6 * target_size, "l$", legendas);
+  loadRegex(base_frame, 1.25, 7.5, 5 * target_size, 6 * target_size, "m$", legendas);
+  loadRegex(base_frame, 10.25, 7.5, 8 * target_size, 6 * target_size, "n$", legendas);
+  loadRegex(base_frame, 1.25, 9.5, 10 * target_size, 6 * target_size, "o$", legendas);
+  loadRegex(base_frame, 1.25, 11.5, 8 * target_size, 6 * target_size, "r$", legendas);
+  loadRegex(base_frame, 17, 11.5, 7 * target_size, 6 * target_size, "s$", legendas);
+  loadRegex(base_frame, 1.25, 13.5, 7 * target_size, 6 * target_size, "t$", legendas);
+  loadRegex(base_frame, 10.5, 13.5, 7 * target_size, 6 * target_size, "u$", legendas);
+  loadRegex(base_frame, 17.75, 13.5, 7 * target_size, 6 * target_size, "v$", legendas);
+  loadRegex(base_frame, 22.75, 13.5, 7 * target_size, 6 * target_size, "y$", legendas);
+  loadRegex(base_frame, 25.5, 13.5, 7 * target_size, 6 * target_size, "z$", legendas);
   for (let i = 0; i < cities.length; i++)
     prefs.add(cities[i].slice(-1));
   print(prefs);
