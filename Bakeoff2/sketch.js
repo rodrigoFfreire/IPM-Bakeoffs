@@ -89,17 +89,6 @@ function draw()
     text("Trial " + (current_trial + 1) + " of " + trials.length, 50, 20);
     
     drawCurrentFrame();
-    // Draw all targets
-	//for (var i = 0; i < legendas.getRowCount(); i++)
-      //targets[i].draw();
-    //menus.draw();
-    
-    // Displays the city on the button being currently hovered over
-    /*fill(255, 255, 255);
-    textSize(32);
-    textAlign(CENTER);
-    text(hoverDisplay, width/2, height/2);*/
-    //text(hoverDisplay, width - 60, floor(mouseY / (height / 10)) * (height /10) + (height / 20));
     
     // Draws the target label to be selected in the current trial. We include 
     // a black rectangle behind the trial label for optimal contrast in case 
@@ -222,78 +211,35 @@ function continueTest()
 function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
-  let menus = new Targets(target_size, screen_height - 3 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
-  //let outliers = new Targets(target_size, screen_height - target_size * 1.5, 1, 1, screen_width - 2 * target_size, 4 * target_size);
-  let outliers = new NamedTargets(target_size, screen_height - target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size, "Others", DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
-  let cities = legendas.getColumn(1);
   let prefs = new Set();
-  cities.sort();
-  let outlier_cities = legendas.matchRows("^By|^Bn|^Bl", 1);
-
-  for (let i = 0; i < outlier_cities.length; i++) {
-    outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, COLOR_DEFAULT_BUTTON, DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
-    prefs.add(outlier_cities[i].getString(1).substring(0, 2));
-  }
-
-  for (let i = 0; i < cities.length; i++) {
-    let prefix = cities[i].substring(0, 2);
-    if (prefs.has(prefix))
-      continue;
-    if (prefix.localeCompare("Be") === 0) {
-      prefix += "|Bé";
-      prefs.add("Bé");
-    }
-
-    let menu = new Menu(0, 0, target_size * 1.2, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 72, base_frame, 10, 10);
-    let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
-    loadMenu(menu, targets, prefix, legendas);
-    menus.with(menu);
-    prefs.add(prefix.substring(0, 2));
-  }
-  base_frame.with(menus);
-  base_frame.with(outliers);
-}
-
-function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
-{
-  setupFrames(horizontal_gap, vertical_gap);
-  let menus = new Targets(target_size, screen_height - 4.5 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
-  let sufixes = new Set();
-  sufixes.add("é");
-  sufixes.add("á");
   let cities = legendas.getColumn(1);
   cities.sort((A, B) => {
     let res = A.slice(-1).localeCompare(B.slice(-1));
     return res;
   });
-  let count = 0;
-  let left = 18;
-  let group_size = 4;
-  let menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * 1.2 * target_size, 1.2 * target_size);
-  menus.with(menuGroup);
-  for (let i = 0; i < cities.length; i++) {
-    if (sufixes.has(cities[i].slice(-1)))
-      continue;
-    if (count == group_size) {
-      if (left < group_size)
-        group_size = left;
-      menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * 1.2 * target_size, 1.2 * target_size);
-      menus.with(menuGroup);
-      count = 0;
-    }
-    let menu = new Menu(0, 0, target_size * 1.2, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 72, base_frame, 10, 10);
-    count++;
-    left--;
-    menuGroup.with(menu);
-    let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
-    invertedLoadMenu(menu, targets, cities[i].slice(-1), legendas)
-    //menus.with(menu);
-    sufixes.add(cities[i].slice(-1));
-  }
-  base_frame.with(menus);
+  loadRegex(base_frame, 2, 2, 12 * target_size, 2.5 * target_size, "a$|á$", legendas);
+  loadRegex(base_frame, 8, 5, 5 * target_size, 6 * target_size, "d$", legendas);
+  loadRegex(base_frame, 18, 5, 5 * target_size, 6 * target_size, "e$|é$", legendas);
+  loadRegex(base_frame, 2, 8, 5 * target_size, 6 * target_size, "g$", legendas);
+  loadRegex(base_frame, 12, 8, 5 * target_size, 6 * target_size, "g$", legendas);
+  //loadRegex(base_frame, 10, 9.5, 5 * target_size, 6 * target_size, "h$", legendas);
+  //loadRegex(base_frame, 16, 12, 8 * target_size, 2 * target_size, "i$", legendas);
+  //loadRegex(base_frame, 16, 14.5, 7 * target_size, 2 * target_size, "k$", legendas);
+  //loadRegex(base_frame, 2, 9.5, 5 * target_size, 6 * target_size, "l$", legendas);
+  //loadRegex(base_frame, 2, 12, 5 * target_size, 6 * target_size, "m$", legendas);
+  //loadRegex(base_frame, 2, 14.5, 5 * target_size, 6 * target_size, "n$", legendas);
+  //loadRegex(base_frame, 16, 9.5, 5 * target_size, 6 * target_size, "o$", legendas);
+  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "r$", legendas);
+  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "s$", legendas);
+  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "t$", legendas);
+  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "u$", legendas);
+  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "v$", legendas);
+  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "y$", legendas);
+  //loadRegex(base_frame, 16, 9.5, 7 * target_size, 6 * target_size, "z$", legendas);
+  for (let i = 0; i < cities.length; i++)
+    prefs.add(cities[i].slice(-1));
+  print(prefs);
 }
-
-
 
 // Is invoked when the canvas is resized (e.g., when we go fullscreen)
 function windowResized() 
@@ -321,8 +267,7 @@ function windowResized()
     
     // Creates and positions the UI targets according to the white space defined above (in cm!)
     // 80 represent some margins around the display (e.g., for text)
-    //createTargets(target_size, horizontal_gap, vertical_gap);
-    invertedCreateTargets(target_size, horizontal_gap, vertical_gap);
+    createTargets(target_size, horizontal_gap, vertical_gap);
 
     // Starts drawing targets immediately after we go fullscreen
     draw_targets = true;
