@@ -219,33 +219,6 @@ function continueTest()
 }
 
 // Creates and positions the UI targets
-function groupTargets(target_size, horizontal_gap, vertical_gap) {
-  setupFrames(horizontal_gap, vertical_gap);
-  let cities = legendas.getColumn(1);
-  let prefs = new Set();
-  cities.sort();
-  for (let i = 0; i < cities.length; i++) {
-    let prefix = cities[i].substring(0, 2);
-    if (prefs.has(prefix)) continue;
-    if (prefix.localeCompare("Be") === 0) {
-      prefix += "|Bé";
-      prefs.add("Bé");
-    }
-    let group = new Group(0.75, 0.75);
-    let targets = new Targets(
-      target_size,
-      target_size,
-      0.5,
-      0.25,
-      screen_width - 2 * target_size,
-      3 * target_size
-    );
-    loadGroup(group, targets, prefix, legendas);
-    prefs.add(prefix.substring(0, 2));
-    base_frame.with(group);
-  }
-}
-
 function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
@@ -284,8 +257,7 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
 function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
-  //let menus = new Targets(target_size, screen_height - 3 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
-  let menus = new Targets(target_size, screen_height - 4 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
+  let menus = new Targets(target_size, screen_height - 4.5 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
   let sufixes = new Set();
   sufixes.add("é");
   sufixes.add("á");
@@ -294,13 +266,28 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
     let res = A.slice(-1).localeCompare(B.slice(-1));
     return res;
   });
+  let count = 0;
+  let left = 18;
+  let group_size = 4;
+  let menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * 1.2 * target_size, 1.2 * target_size);
+  menus.with(menuGroup);
   for (let i = 0; i < cities.length; i++) {
     if (sufixes.has(cities[i].slice(-1)))
       continue;
+    if (count == group_size) {
+      if (left < group_size)
+        group_size = left;
+      menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * 1.2 * target_size, 1.2 * target_size);
+      menus.with(menuGroup);
+      count = 0;
+    }
     let menu = new Menu(0, 0, target_size * 1.2, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 72, base_frame, 10, 10);
+    count++;
+    left--;
+    menuGroup.with(menu);
     let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
     invertedLoadMenu(menu, targets, cities[i].slice(-1), legendas)
-    menus.with(menu);
+    //menus.with(menu);
     sufixes.add(cities[i].slice(-1));
   }
   base_frame.with(menus);
