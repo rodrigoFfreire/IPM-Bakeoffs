@@ -7,7 +7,7 @@
 
 // Database (CHANGE THESE!)
 const GROUP_NUMBER        = 51;      // Add your group number here as an integer (e.g., 2, 3)
-const RECORD_TO_FIREBASE  = true;  // Set to 'true' to record user results to Firebase
+const RECORD_TO_FIREBASE  = false;  // Set to 'true' to record user results to Firebase
 
 // Pixel density and setup variables (DO NOT CHANGE!)
 let PPI, PPCM;
@@ -217,24 +217,25 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
     let res = A.slice(-1).localeCompare(B.slice(-1));
     return res;
   });
-  loadRegex(base_frame, 1.25, 1.5, 13.1 * target_size, 2.5 * target_size, "a$|á$", legendas);
-  loadRegex(base_frame, 1.25, 3.5, 5 * target_size, 6 * target_size, "d$", legendas);
-  loadRegex(base_frame, 10.25, 3.5, 5 * target_size, 6 * target_size, "e$|é$", legendas);
-  loadRegex(base_frame, 19.25, 3.5, 5 * target_size, 6 * target_size, "g$", legendas);
-  loadRegex(base_frame, 27.9, 3.5, 5 * target_size, 6 * target_size, "h$", legendas);
-  loadRegex(base_frame, 1.25, 5.5, 8 * target_size, 2 * target_size, "i$", legendas);
-  loadRegex(base_frame, 14.625, 5.5, 7 * target_size, 2 * target_size, "k$", legendas);
-  loadRegex(base_frame, 23.625, 5.5, 5 * target_size, 6 * target_size, "l$", legendas);
-  loadRegex(base_frame, 1.25, 7.5, 5 * target_size, 6 * target_size, "m$", legendas);
-  loadRegex(base_frame, 10.25, 7.5, 8 * target_size, 6 * target_size, "n$", legendas);
-  loadRegex(base_frame, 1.25, 9.5, 10 * target_size, 6 * target_size, "o$", legendas);
-  loadRegex(base_frame, 1.25, 11.5, 8 * target_size, 6 * target_size, "r$", legendas);
-  loadRegex(base_frame, 17, 11.5, 7 * target_size, 6 * target_size, "s$", legendas);
-  loadRegex(base_frame, 1.25, 13.5, 7 * target_size, 6 * target_size, "t$", legendas);
-  loadRegex(base_frame, 10.5, 13.5, 7 * target_size, 6 * target_size, "u$", legendas);
-  loadRegex(base_frame, 17.75, 13.5, 7 * target_size, 6 * target_size, "v$", legendas);
-  loadRegex(base_frame, 22.75, 13.5, 7 * target_size, 6 * target_size, "y$", legendas);
-  loadRegex(base_frame, 25.5, 13.5, 7 * target_size, 6 * target_size, "z$", legendas);
+  hue = 0;
+  hue = loadRegex(base_frame, 1.25, 1.5, 13.1 * target_size, 2.5 * target_size, "a$|á$", legendas, hue);
+  hue = loadRegex(base_frame, 1.25, 3.5, 5 * target_size, 6 * target_size, "d$", legendas, hue);
+  hue = loadRegex(base_frame, 10.25, 3.5, 5 * target_size, 6 * target_size, "e$|é$", legendas, hue);
+  hue = loadRegex(base_frame, 19.25, 3.5, 5 * target_size, 6 * target_size, "g$", legendas, hue);
+  hue = loadRegex(base_frame, 27.9, 3.5, 5 * target_size, 6 * target_size, "h$", legendas, hue);
+  hue = loadRegex(base_frame, 1.25, 5.5, 8 * target_size, 2 * target_size, "i$", legendas, hue);
+  hue = loadRegex(base_frame, 14.625, 5.5, 7 * target_size, 2 * target_size, "k$", legendas, hue);
+  hue = loadRegex(base_frame, 23.625, 5.5, 5 * target_size, 6 * target_size, "l$", legendas, hue);
+  hue = loadRegex(base_frame, 1.25, 7.5, 5 * target_size, 6 * target_size, "m$", legendas, hue);
+  hue = loadRegex(base_frame, 10.25, 7.5, 8 * target_size, 6 * target_size, "n$", legendas, hue);
+  hue = loadRegex(base_frame, 1.25, 9.5, 10 * target_size, 6 * target_size, "o$", legendas, hue);
+  hue = loadRegex(base_frame, 1.25, 11.5, 8 * target_size, 6 * target_size, "r$", legendas, hue);
+  hue = loadRegex(base_frame, 17, 11.5, 7 * target_size, 6 * target_size, "s$", legendas, hue);
+  hue = loadRegex(base_frame, 1.25, 13.5, 7 * target_size, 6 * target_size, "t$", legendas, hue);
+  hue = loadRegex(base_frame, 10.5, 13.5, 7 * target_size, 6 * target_size, "u$", legendas, hue);
+  hue = loadRegex(base_frame, 17.75, 13.5, 7 * target_size, 6 * target_size, "v$", legendas, hue);
+  hue = loadRegex(base_frame, 22.75, 13.5, 7 * target_size, 6 * target_size, "y$", legendas, hue);
+  hue = loadRegex(base_frame, 25.5, 13.5, 7 * target_size, 6 * target_size, "z$", legendas, hue);
   for (let i = 0; i < cities.length; i++)
     prefs.add(cities[i].slice(-1));
   print(prefs);
