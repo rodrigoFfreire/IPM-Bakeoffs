@@ -10,18 +10,20 @@ function cmToPixel(cm) {
 
 // Target class (position and width)
 class Target {
-  constructor(x, y, w, l, id, objective, fill_color, font, text_color, text_size)
+  constructor(x, y, w, l, id, objective, fill_color, font, text_color, text_size, prefix)
   {
-    this.x      = cmToPixel(x);
-    this.y      = cmToPixel(y);
-    this.width  = cmToPixel(w);
-    this.label  = l;
-    this.id     = id;
+    this.x= cmToPixel(x);
+    this.y = cmToPixel(y);
+    this.width = cmToPixel(w);
+    this.label = l;
+    this.id = id;
     this.objective = objective;
     this.fill_color = fill_color;
     this.font = font;
     this.text_color = text_color;
     this.text_size = text_size;
+    this.wasClicked = false;
+    this.prefix = prefix;
   }
   
   // Assumes x, and y in pixels.
@@ -60,23 +62,33 @@ class Target {
   draw() {
     // Draw target
     fill(this.fill_color);
+    if (this.wasClicked) {
+      stroke(255);
+      strokeWeight(5);
+    }
     circle(this.x, this.y, this.width);
-  
+
     // Draw label
     textFont(this.font, this.text_size);
-    
+    if (this.wasClicked)
+      noStroke();
     fill(this.text_color);
     textAlign(CENTER);
     text(this.label, this.x, this.y);
+    if (this.prefix) {
+      textStyle(BOLD);
+      text(this.label.substring(0, 2).toUpperCase(), this.x, this.y - this.width/4);
+      textStyle(NORMAL);
+    }
   }
 
   forward() {
     if (this.objective === true) {
       drawing = base_frame;
-      if (this.id === trials[current_trial] + 1)
+      if (this.id === trials[current_trial] + 1) {
         hits++;
-      else
-        misses++;
+        this.wasClicked = true;
+      } else misses++;
       current_trial++;
     }
   }
@@ -167,7 +179,7 @@ class Targets {
     this.x = x;
     let aux = this.targets;
     this.targets = [];
-    for (let i  = 0; i < aux.length; i++)
+    for (let i = 0; i < aux.length; i++)
       this.with(aux[i]);
   }
 
@@ -234,9 +246,9 @@ class Menu extends Frame {
   constructor(x, y, w, l, color, font, text_color, text_size, parent, x_gap, y_gap) {
     super(0, 0, x_gap, y_gap, width, height, 0);
     this.parent = parent;
-    this.target = new Target(x, y, w, l, -1, false, color, font, text_color, text_size);
+    this.target = new Target(x, y, w, l, -1, false, color, font, text_color, text_size, false);
   }
-  
+
   move(x, y) {
     this.target.move(x, y);
   }
@@ -330,13 +342,13 @@ function loadMenu(menu, targets, regex, table) {
         if (matches[j].getString(1).substring(0, 3).localeCompare(pref3) === 0)
           count++;
       seen.add(pref3);
-      //group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
-      group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref3, DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
+      group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
+      //group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref3, DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
       targets.with(group);
       hue = (hue + 40) % 360;
     }
     let name = matches[i].getString(1);
-    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
+    group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size, true));
   }
   menu.with(targets);
 }
@@ -371,15 +383,15 @@ function invertedLoadMenu(menu, targets, regex, table) {
         if (matches[j].getString(1).substring(0, 2).localeCompare(pref2) === 0)
           count++;
       seen.add(pref2);
-      //group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
+      group = new Targets(0, 0, 0, 0, tg * count + 0.01, tg);
       //group = new NamedTargets(0, 0, 0, 0, target_size * count + 0.01, target_size, pref2, DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
-      group = new NamedTargets(0, 0, 0, 0, tg * count + 0.01, tg, pref2, DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
+      //group = new NamedTargets(0, 0, 0, 0, tg * count + 0.01, tg, pref2, DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
       targets.with(group);
       hue = (hue + 40) % 360;
     }
     let name = matches[i].getString(1);
     //group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
-    group.with(new Target(200, 200, tg, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size * 1.3));
+    group.with(new Target(200, 200, tg, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size * 1.3, true));
   }
   menu.with(targets);
 }

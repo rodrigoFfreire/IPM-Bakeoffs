@@ -62,7 +62,7 @@ function setup()
   colorMode(HSB, 360, 100, 100); // Use HSB color
   COLOR_WHITE = color(0, 0, 100);
   COLOR_BLACK = color(0, 0, 0);
-  COLOR_DEFAULT_BUTTON = color(0, 0, 30);
+  COLOR_DEFAULT_BUTTON = color(210, 100, 40);
   DEFAULT_TARGET_FONT = "Serif";
   DEFAULT_MENU_FONT = "Serif";
   DEBUG = false;
