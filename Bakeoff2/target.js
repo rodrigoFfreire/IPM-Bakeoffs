@@ -322,6 +322,8 @@ function loadRegex(base, x, y, w, h, regex, table) {
     return res;
   });
   for (let i = 0; i < matches.length; i++)
-    targets.with(new Target(200, 200, target_size, matches[i].getString(1), matches[i].getNum(0), true, color(50, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
+    targets.with(new Target(200, 200, target_size, matches[i].getString(1), matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
   base.with(targets);
+
+  return (hue + 40) % 360
 }
