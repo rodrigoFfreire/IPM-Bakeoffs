@@ -8,6 +8,10 @@ function cmToPixel(cm) {
   return cm * PPCM;
 }
 
+function pixelToCm(pixel) {
+  return pixel / PPCM;
+}
+
 // Target class (position and width)
 class Target {
   constructor(x, y, w, l, id, objective, fill_color, font, text_color, text_size, prefix)
@@ -37,8 +41,12 @@ class Target {
     this.y = y;
   }
 
-  x() {
+  X() {
     return this.x;
+  }
+
+  Y() {
+    return this.y;
   }
 
   xSize() {
@@ -116,8 +124,12 @@ class Targets {
     this.last_y = 0;
   }
 
-  x() {
+  X() {
     return this.x;
+  }
+
+  Y() {
+    return this.y;
   }
 
   xSize() {
@@ -158,7 +170,7 @@ class Targets {
       for (let i = this.targets.length; i >= 0; i--) {
         if (i < this.last_y)
           break;
-        this.targets[i].move(this.targets[i].x(), this.last_y + (this.line_height - this.targets[i].ySize()) / 2);
+        this.targets[i].move(this.targets[i].X(), this.last_y + (this.line_height - this.targets[i].ySize()) / 2);
       }
     } else {
       target_y = this.last_y + (this.line_height - target.ySize()) / 2;
@@ -257,8 +269,12 @@ class Menu extends Frame {
     this.target.move(x, y);
   }
 
-  x() {
-    return this.x;
+  X() {
+    return this.target.X();
+  }
+
+  Y() {
+    return this.target.Y();
   }
 
   xSize() {
@@ -357,7 +373,7 @@ function loadMenu(menu, targets, regex, table) {
   menu.with(targets);
 }
 
-function invertedLoadMenu(menu, targets, regex, table) {
+/*function invertedLoadMenu(menu, targets, regex, table) {
   let matches;
   if (regex.localeCompare("a") === 0) {
     matches = table.matchRows("a$|á$", 1);
@@ -397,5 +413,56 @@ function invertedLoadMenu(menu, targets, regex, table) {
     //group.with(new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
     group.with(new Target(200, 200, tg, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size * 1.3, true));
   }
+  menu.with(targets);
+}*/
+
+function invertedLoadMenu(menu, regex, table) {
+  // pior caso: 6 grupos de prefixo 2
+  let target_xgap = 0.5;
+  let target_ygap = 1;
+  let targets = new Targets(pixelToCm(menu.X()), pixelToCm(menu.Y()), target_xgap, target_ygap, 8 * (target_size + target_xgap), 2 * (target_size + target_ygap));
+  let matches;
+  if (regex.localeCompare("a") === 0) {
+    matches = table.matchRows("a$|á$", 1);
+  } else if (regex.localeCompare("e") === 0) {
+    matches = table.matchRows("e$|é$", 1);
+  } else {
+    matches = table.matchRows(regex + "$", 1);
+  }
+  matches.sort((A, B) => {
+    let res = A.getString(1).localeCompare(B.getString(1));
+    if (!res) {
+      let swap = A.getNum(0);
+      A.setNum(0, B.getNum(0));
+      B.setNum(0, swap);
+    }
+    return res;
+  });
+  let seen = new Set();
+  let group;
+  let hue = -40;
+  let max_x = 0;
+  let max_y = 0;
+  for (let i = 0; i < matches.length; i++) {
+    let pref2 = matches[i].getString(1).substring(0, 2);
+    if (!seen.has(pref2)) {
+      let count = 1;
+      for (let j = i + 1; j < matches.length; j++)
+        if (matches[j].getString(1).substring(0, 2).localeCompare(pref2) === 0)
+          count++;
+      seen.add(pref2);
+      group = new Targets(0, 0, 0, 0, target_size * count + 0.01, target_size);
+      targets.with(group);
+      hue = (hue + 40) % 360;
+    }
+    let name = matches[i].getString(1);
+    let target = new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size * 1.3, true);
+    group.with(target);
+    max_x = max(max_x, target.X() + target.xSize());
+    max_y = max(max_y, target.Y() + target.ySize());
+  }
+  let screen_height_px = cmToPixel(screen_height);
+  let screen_width_px = cmToPixel(screen_width);
+  targets.move(targets.X() + min(0, screen_width_px - max_x), targets.Y() + min(screen_height_px - max_y, 0));
   menu.with(targets);
 }

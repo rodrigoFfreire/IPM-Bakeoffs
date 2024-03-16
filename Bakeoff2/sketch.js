@@ -39,6 +39,7 @@ const TEXT_FACTOR_C_TARGET     = 4;
 let screen_width; // screen width
 let screen_height; // screen height
 let target_size = 2.3; // sets the target size (will be converted to cm when passed to createTargets)
+let menu_target_size = 2.5;
 let target_text_size;
 let menu_text_size;
 
@@ -272,9 +273,9 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
   // Create Menu group
   let menu_xgap = 0.75;
   let menu_ygap = 0.75;
-  let menu_x = screen_width / 2 - ((groups_per_row * target_size * group_size) + (groups_per_row * menu_xgap)) / 2;
+  let menu_x = screen_width / 2 - ((groups_per_row * menu_target_size * group_size) + (groups_per_row * menu_xgap)) / 2;
   let menu_w = (screen_width / 2 - menu_x) * 2.1; // .1 to account for floating point errors
-  let menu_h = Math.ceil(left / (group_size * groups_per_row)) * (target_size + menu_ygap);
+  let menu_h = Math.ceil(left / (group_size * groups_per_row)) * (menu_target_size + menu_ygap);
   let menu_y = screen_height - menu_h;
   let menus = new Targets(menu_x, menu_y, menu_xgap, menu_ygap, menu_w, menu_h);
 
@@ -287,7 +288,7 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
     return res;
   });
 
-  let menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * target_size, target_size);
+  let menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * menu_target_size, menu_target_size);
   menus.with(menuGroup);
   for (let i = 0; i < cities.length; i++) {
     if (sufixes.has(cities[i].slice(-1)))
@@ -295,7 +296,7 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
     if (count == group_size) {
       if (left < group_size)
         group_size = left;
-      menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * target_size, target_size);
+      menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * menu_target_size, menu_target_size);
       menus.with(menuGroup);
       count = 0;
     }
@@ -303,8 +304,7 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
     count++;
     left--;
     menuGroup.with(menu);
-    let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
-    invertedLoadMenu(menu, targets, cities[i].slice(-1), legendas)
+    invertedLoadMenu(menu, cities[i].slice(-1), legendas)
     sufixes.add(cities[i].slice(-1));
   }
   base_frame.with(menus);
