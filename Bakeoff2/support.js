@@ -46,7 +46,7 @@ function drawUserIDScreen()
                                   -Existem submenus que agrupam palavras com a mesma letra final<br>\
                                   -Dentro de cada submenu as cidades estão por ordem alfabética<br>\
                                   -Exemplo: Bacolod e Bialogard estão no submenu D, mas Braga está no submenu A<br>\
-                                  -Oara sair de um submenu clique no background preto<br>\
+                                  -Para sair de um submenu clique no background preto<br>\
                                   -O tempo só começa a contar após o primeiro clique<br>\
                                   Boa sorte!");
   instructions_label.id('instructions');
