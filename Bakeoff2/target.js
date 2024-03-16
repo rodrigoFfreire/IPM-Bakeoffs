@@ -88,7 +88,11 @@ class Target {
       if (this.id === trials[current_trial] + 1) {
         hits++;
         this.wasClicked = true;
-      } else misses++;
+        CORRECT_CLICK.play();
+      } else {
+        misses++;
+        WRONG_CLICK.play();
+      }
       current_trial++;
     }
   }

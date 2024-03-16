@@ -7,7 +7,7 @@
 
 // Database (CHANGE THESE!)
 const GROUP_NUMBER        = 51;      // Add your group number here as an integer (e.g., 2, 3)
-const RECORD_TO_FIREBASE  = true;  // Set to 'true' to record user results to Firebase
+const RECORD_TO_FIREBASE  = false;  // Set to 'true' to record user results to Firebase
 
 // Pixel density and setup variables (DO NOT CHANGE!)
 let PPI, PPCM;
@@ -49,6 +49,9 @@ let DEFAULT_TARGET_FONT;
 let DEFAULT_MENU_FONT;
 let DEBUG;
 
+let CORRECT_CLICK;
+let WRONG_CLICK;
+
 // Ensures important data is loaded before the program starts
 function preload()
 {
@@ -67,6 +70,8 @@ function setup()
   DEFAULT_MENU_FONT = "Serif";
   DEBUG = false;
 
+  CORRECT_CLICK = loadSound("assets/correct_click.mp3");
+  WRONG_CLICK = loadSound("assets/wrong_click.mp3");
   createCanvas(700, 500);        // window size in px before we go into fullScreen()
   frameRate(60);                 // frame rate (DO NOT CHANGE!)
   randomizeTrials();             // randomize the trial order at the start of execution
@@ -257,7 +262,20 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
 function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
-  let menus = new Targets(target_size, screen_height - 4.5 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
+  let count = 0; // aux variable when grouping menus
+  let left = 18; // number of menus
+  let group_size = 4; // size of each group
+  let groups_per_row = 2; // how many groups should be side by side
+
+  // Create Menu group
+  let menu_xgap = 0.75;
+  let menu_ygap = 0.75;
+  let menu_x = screen_width / 2 - ((groups_per_row * target_size * group_size) + (groups_per_row * menu_xgap)) / 2;
+  let menu_w = (screen_width / 2 - menu_x) * 2.1; // .1 to account for floating point errors
+  let menu_h = Math.ceil(left / (group_size * groups_per_row)) * (target_size + menu_ygap);
+  let menu_y = screen_height - menu_h;
+  let menus = new Targets(menu_x, menu_y, menu_xgap, menu_ygap, menu_w, menu_h);
+
   let sufixes = new Set();
   sufixes.add("é");
   sufixes.add("á");
@@ -266,10 +284,8 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
     let res = A.slice(-1).localeCompare(B.slice(-1));
     return res;
   });
-  let count = 0;
-  let left = 18;
-  let group_size = 4;
-  let menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * 1.2 * target_size, 1.2 * target_size);
+
+  let menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * target_size, target_size);
   menus.with(menuGroup);
   for (let i = 0; i < cities.length; i++) {
     if (sufixes.has(cities[i].slice(-1)))
@@ -277,17 +293,16 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
     if (count == group_size) {
       if (left < group_size)
         group_size = left;
-      menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * 1.2 * target_size, 1.2 * target_size);
+      menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * target_size, target_size);
       menus.with(menuGroup);
       count = 0;
     }
-    let menu = new Menu(0, 0, target_size * 1.2, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 72, base_frame, 10, 10);
+    let menu = new Menu(0, 0, target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 72, base_frame, 10, 10);
     count++;
     left--;
     menuGroup.with(menu);
     let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
     invertedLoadMenu(menu, targets, cities[i].slice(-1), legendas)
-    //menus.with(menu);
     sufixes.add(cities[i].slice(-1));
   }
   base_frame.with(menus);
