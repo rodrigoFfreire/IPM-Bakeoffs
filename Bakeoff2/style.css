@@ -23,11 +23,9 @@ canvas
   color: white;
 }
 
-#instructions
+#start_button
 {
-  font-size: 16px;
+  font-size: 20px;
   font-family: 'Arial';
-  color: white;
-  text-align: left;
-  width: 690px;
+  padding: 15px 60px;
 }

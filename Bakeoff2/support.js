@@ -35,25 +35,10 @@ function drawUserIDScreen()
   display_size_label.id('input');
   display_size_label.position(10, display_size_pos_y_offset);
 
-  // 3. Instructions
-  /*instructions_label = createDiv("INSTRUÇÕES:<br>\
-                                  Este protótipo utiliza submenus que agrupam palavras de prefixos de 2 letras de forma alfabética.<br>\
-                                  Para sair de um submenu clique no background preto.<br>\
-                                  Existem 3 cidades que não estão agrupadas por submenus.<br>\
-                                  Boa sorte!");*/
-  instructions_label = createDiv("INSTRUÇÕES:<br>\
-                                  Objetivo: clicar no botão com a cidade que aparece na parte inferior do ecrã<br>\
-                                  -Existem submenus que agrupam palavras com a mesma letra final<br>\
-                                  -Dentro de cada submenu as cidades estão por ordem alfabética<br>\
-                                  -Exemplo: Bacolod e Bialogard estão no submenu D, mas Braga está no submenu A<br>\
-                                  -Para sair de um submenu clique no background preto<br>\
-                                  -O tempo só começa a contar após o primeiro clique<br>\
-                                  Boa sorte!");
-  instructions_label.id('instructions');
-  instructions_label.position(15, height/2.3);
   
-  // 4. Start button
+  // 3. Start button
   start_button = createButton('START');
+  start_button.id('start_button');
   start_button.mouseReleased(startTest);
   start_button.position(width/2 - start_button.size().width/2, height/1.2 - start_button.size().height/2);
 }
@@ -95,7 +80,6 @@ function startTest()
     student_ID_label.remove();
     display_size_form.remove();
     display_size_label.remove();
-    instructions_label.remove();
     start_button.remove();  
 
     // Goes fullscreen and starts test

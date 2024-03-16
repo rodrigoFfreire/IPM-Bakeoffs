@@ -52,14 +52,15 @@ let DEFAULT_TARGET_FONT;
 let DEFAULT_MENU_FONT;
 let DEBUG;
 
-let CORRECT_CLICK;
-let WRONG_CLICK;
 
 // Ensures important data is loaded before the program starts
 function preload()
 {
   // id,name,...
   legendas = loadTable('legendas.csv', 'csv', 'header');
+  tutorial_img = loadImage("assets/images/tutorial.png");
+  CORRECT_CLICK = loadSound("assets/sounds/correct_click.mp3");
+  WRONG_CLICK = loadSound("assets/sounds/wrong_click.mp3");
 }
 
 // Runs once at the start
@@ -73,13 +74,12 @@ function setup()
   DEFAULT_MENU_FONT = "Serif";
   DEBUG = false;
 
-  CORRECT_CLICK = loadSound("assets/correct_click.mp3");
-  WRONG_CLICK = loadSound("assets/wrong_click.mp3");
-  createCanvas(700, 500);        // window size in px before we go into fullScreen()
+  createCanvas(1920, 1080);        // window size in px before we go into fullScreen()
   frameRate(60);                 // frame rate (DO NOT CHANGE!)
   randomizeTrials();             // randomize the trial order at the start of execution
   drawUserIDScreen();            // draws the user start-up screen (student ID and display size)
-  
+
+  image(tutorial_img, 0, 160);   // Draws the tutorial image
 }
 
 // Runs every frame and redraws the screen
