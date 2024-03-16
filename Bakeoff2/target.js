@@ -20,7 +20,7 @@ class Target {
     this.fill_color = fill_color;
     this.font = font;
     this.text_color = text_color;
-    this.text_size = text_size;
+    this.text_size = cmToPixel(text_size);
     this.wasClicked = false;
   }
   
@@ -63,18 +63,22 @@ class Target {
     if (this.wasClicked) {
       stroke(255);
       strokeWeight(5);
+      rect(this.x - this.width / 2, this.y - this.width / 2.4, this.width, this.width / 1.6);
+      stroke(0);
+      strokeWeight(1);
+    } else {
+      rect(this.x - this.width / 2, this.y - this.width / 2.4, this.width, this.width / 1.6);
     }
-    rect(this.x - this.width/2, this.y - this.width/2.4, this.width, this.width/1.6);
   
     // Draw label
+    textStyle(BOLD);
     textFont(this.font, this.text_size);
-    if (this.wasClicked)
-      noStroke();
     fill(this.text_color);
     textAlign(CENTER);
     text(this.label, this.x, this.y);
     textFont(this.font, this.text_size + 10);
     text(this.label.charAt(this.label.length - 1).toUpperCase(), this.x, this.y - this.width / 4.5);
+    textStyle(NORMAL);
   }
 
   forward() {
@@ -83,10 +87,13 @@ class Target {
       if (this.id === trials[current_trial] + 1) {
         hits++;
         this.wasClicked = true;
-      } else
+        CORRECT_CLICK.play();
+      } else {
         misses++;
+        WRONG_CLICK.play();
+      }
       current_trial++;
-    }
+    } 
   }
 
   back() {

@@ -38,7 +38,7 @@ const TEXT_FACTOR_C       = 0;
 let screen_width; // screen width
 let screen_height; // screen height
 let target_size = 2.1; // sets the target size (will be converted to cm when passed to createTargets)
-let target_text_size;
+let target_text_size = 0.28;
 
 let PROJECT_CODENAME = "NoMenus"
 
@@ -48,6 +48,9 @@ let COLOR_DEFAULT_BUTTON;
 let DEFAULT_TARGET_FONT;
 let DEFAULT_MENU_FONT;
 let DEBUG;
+
+let CORRECT_CLICK;
+let WRONG_CLICK;
 
 // Ensures important data is loaded before the program starts
 function preload()
@@ -66,7 +69,8 @@ function setup()
   DEFAULT_TARGET_FONT = "Serif";
   DEFAULT_MENU_FONT = "Serif";
   DEBUG = false;
-
+  CORRECT_CLICK = loadSound("assets/correct_click.mp3");
+  WRONG_CLICK = loadSound("assets/wrong_click.mp3");
   createCanvas(700, 500);        // window size in px before we go into fullScreen()
   frameRate(60);                 // frame rate (DO NOT CHANGE!)
   randomizeTrials();             // randomize the trial order at the start of execution
@@ -262,8 +266,8 @@ function windowResized()
     
     let vertical_gap = 2;
 
-    target_text_size = Math.floor((TEXT_FACTOR_A / display.diagonal) + TEXT_FACTOR_C);
-    console.log("Calculated text size:" + target_text_size);
+    /*target_text_size = Math.floor((TEXT_FACTOR_A / display.diagonal) + TEXT_FACTOR_C);
+    console.log("Calculated text size:" + target_text_size);*/
     
     // Creates and positions the UI targets according to the white space defined above (in cm!)
     // 80 represent some margins around the display (e.g., for text)
