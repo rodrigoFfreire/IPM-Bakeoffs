@@ -456,7 +456,7 @@ function invertedLoadMenu(menu, regex, table) {
       hue = (hue + 40) % 360;
     }
     let name = matches[i].getString(1);
-    let target = new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size * 1.3, true);
+    let target = new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size, true);
     group.with(target);
     max_x = max(max_x, target.X() + target.xSize());
     max_y = max(max_y, target.Y() + target.ySize());

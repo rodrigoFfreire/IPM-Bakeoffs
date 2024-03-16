@@ -38,7 +38,7 @@ const TEXT_FACTOR_C_TARGET     = 4;
 // Below we find out out white space we can have between 2 cm targets
 let screen_width; // screen width
 let screen_height; // screen height
-let target_size = 2.3; // sets the target size (will be converted to cm when passed to createTargets)
+let target_size = 3; // sets the target size (will be converted to cm when passed to createTargets)
 let menu_target_size = 2.5;
 let target_text_size;
 let menu_text_size;
@@ -227,7 +227,7 @@ function continueTest()
 }
 
 // Creates and positions the UI targets
-function createTargets(target_size, horizontal_gap, vertical_gap)
+/*function createTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
   let menus = new Targets(target_size, screen_height - 3 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
@@ -260,7 +260,7 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
   }
   base_frame.with(menus);
   base_frame.with(outliers);
-}
+}*/
 
 function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
 {
@@ -300,7 +300,7 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
       menus.with(menuGroup);
       count = 0;
     }
-    let menu = new Menu(0, 0, target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
+    let menu = new Menu(0, 0, menu_target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
     count++;
     left--;
     menuGroup.with(menu);
