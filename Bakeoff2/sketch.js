@@ -40,8 +40,8 @@ let screen_width; // screen width
 let screen_height; // screen height
 let target_size = 3; // sets the target size (will be converted to cm when passed to createTargets)
 let menu_target_size = 2.5;
-let target_text_size;
-let menu_text_size;
+let target_text_size = 0.4;
+let menu_text_size = 1.25;
 
 let PROJECT_CODENAME = "React20LastLetter"
 
@@ -333,9 +333,9 @@ function windowResized()
     
     let vertical_gap = 2;
 
-    target_text_size = Math.floor(((TEXT_FACTOR_A * target_size) / display.diagonal) + TEXT_FACTOR_C_TARGET);
-    menu_text_size = Math.floor(((TEXT_FACTOR_A * target_size) / display.diagonal) + TEXT_FACTOR_C_MENU);
-    console.log("Calculated text size:" + target_text_size);
+    /*target_text_size = Math.floor(((TEXT_FACTOR_A * target_size) / display.diagonal) + TEXT_FACTOR_C_TARGET);
+    menu_text_size = Math.floor(((TEXT_FACTOR_A * menu_target_size) / display.diagonal) + TEXT_FACTOR_C_MENU);
+    console.log("Calculated text size:" + target_text_size);*/
     
     // Creates and positions the UI targets according to the white space defined above (in cm!)
     // 80 represent some margins around the display (e.g., for text)

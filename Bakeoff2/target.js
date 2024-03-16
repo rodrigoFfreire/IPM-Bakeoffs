@@ -77,17 +77,16 @@ class Target {
     circle(this.x, this.y, this.width);
 
     // Draw label
-    textFont(this.font, this.text_size);
+    textStyle(BOLD);
+    textFont(this.font, cmToPixel(this.text_size));
     if (this.wasClicked)
       noStroke();
     fill(this.text_color);
     textAlign(CENTER);
     text(this.label, this.x, this.y);
-    if (this.prefix) {
-      textStyle(BOLD);
+    if (this.prefix)
       text(this.label.substring(0, 2).toUpperCase(), this.x, this.y - this.width/4);
-      textStyle(NORMAL);
-    }
+    textStyle(NORMAL);
   }
 
   forward() {
@@ -456,6 +455,7 @@ function invertedLoadMenu(menu, regex, table) {
       hue = (hue + 40) % 360;
     }
     let name = matches[i].getString(1);
+    //let target = new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size, true);
     let target = new Target(200, 200, target_size, name, matches[i].getNum(0), true, color(hue, 50, 50), DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size, true);
     group.with(target);
     max_x = max(max_x, target.X() + target.xSize());
