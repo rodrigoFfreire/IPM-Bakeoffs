@@ -30,8 +30,9 @@ let attempt               = 0;      // users complete each test twice to account
 // Target list and layout variables
 const GRID_ROWS           = 8;      // We divide our 80 targets in a 8x10 grid
 const GRID_COLUMNS        = 10;     // We divide our 80 targets in a 8x10 grid
-const TEXT_FACTOR_A       = 274.827183618;
-const TEXT_FACTOR_C       = 0;
+const TEXT_FACTOR_A       = 119.49008;
+const TEXT_FACTOR_C_MENU       = 30;
+const TEXT_FACTOR_C_TARGET     = 4;
 
 // Make your decisions in 'cm', so that targets have the same size for all participants
 // Below we find out out white space we can have between 2 cm targets
@@ -39,6 +40,7 @@ let screen_width; // screen width
 let screen_height; // screen height
 let target_size = 2.3; // sets the target size (will be converted to cm when passed to createTargets)
 let target_text_size;
+let menu_text_size;
 
 let PROJECT_CODENAME = "React20LastLetter"
 
@@ -249,7 +251,7 @@ function createTargets(target_size, horizontal_gap, vertical_gap)
       prefs.add("Bé");
     }
 
-    let menu = new Menu(0, 0, target_size * 1.2, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 72, base_frame, 10, 10);
+    let menu = new Menu(0, 0, target_size * 1.2, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
     let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
     loadMenu(menu, targets, prefix, legendas);
     menus.with(menu);
@@ -297,7 +299,7 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
       menus.with(menuGroup);
       count = 0;
     }
-    let menu = new Menu(0, 0, target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, 72, base_frame, 10, 10);
+    let menu = new Menu(0, 0, target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
     count++;
     left--;
     menuGroup.with(menu);
@@ -331,7 +333,8 @@ function windowResized()
     
     let vertical_gap = 2;
 
-    target_text_size = Math.floor((TEXT_FACTOR_A / display.diagonal) + TEXT_FACTOR_C);
+    target_text_size = Math.floor(((TEXT_FACTOR_A * target_size) / display.diagonal) + TEXT_FACTOR_C_TARGET);
+    menu_text_size = Math.floor(((TEXT_FACTOR_A * target_size) / display.diagonal) + TEXT_FACTOR_C_MENU);
     console.log("Calculated text size:" + target_text_size);
     
     // Creates and positions the UI targets according to the white space defined above (in cm!)
