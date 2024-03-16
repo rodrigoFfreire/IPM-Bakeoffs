@@ -21,6 +21,7 @@ class Target {
     this.font = font;
     this.text_color = text_color;
     this.text_size = text_size;
+    this.wasClicked = false;
   }
   
   // Assumes x, and y in pixels.
@@ -59,11 +60,16 @@ class Target {
   draw() {
     // Draw target
     fill(this.fill_color);
+    if (this.wasClicked) {
+      stroke(255);
+      strokeWeight(5);
+    }
     rect(this.x - this.width/2, this.y - this.width/2.4, this.width, this.width/1.6);
   
     // Draw label
     textFont(this.font, this.text_size);
-    
+    if (this.wasClicked)
+      noStroke();
     fill(this.text_color);
     textAlign(CENTER);
     text(this.label, this.x, this.y);
@@ -74,9 +80,10 @@ class Target {
   forward() {
     if (this.objective === true) {
       drawing = base_frame;
-      if (this.id === trials[current_trial] + 1)
+      if (this.id === trials[current_trial] + 1) {
         hits++;
-      else
+        this.wasClicked = true;
+      } else
         misses++;
       current_trial++;
     }
