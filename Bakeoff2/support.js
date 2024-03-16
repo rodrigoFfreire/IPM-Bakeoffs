@@ -42,10 +42,12 @@ function drawUserIDScreen()
                                   Existem 3 cidades que não estão agrupadas por submenus.<br>\
                                   Boa sorte!");*/
   instructions_label = createDiv("INSTRUÇÕES:<br>\
-                                  Objetivo: clicar no botão com a cidade que aparece na parte inferior do ecrã.<br>\
-                                  Este protótipo utiliza submenus que agrupam palavras com a mesma letra final.<br>\
-                                  Por exemplo: Bacolod e Bialogard estão no submenu D, mas Braga está no submenu A.<br>\
-                                  Para sair de um submenu clique no background preto.<br>\
+                                  Objetivo: clicar no botão com a cidade que aparece na parte inferior do ecrã<br>\
+                                  -Existem submenus que agrupam palavras com a mesma letra final<br>\
+                                  -Dentro de cada submenu as cidades estão por ordem alfabética<br>\
+                                  -Exemplo: Bacolod e Bialogard estão no submenu D, mas Braga está no submenu A<br>\
+                                  -Oara sair de um submenu clique no background preto<br>\
+                                  -O tempo só começa a contar após o primeiro clique<br>\
                                   Boa sorte!");
   instructions_label.id('instructions');
   instructions_label.position(15, height/2.3);
