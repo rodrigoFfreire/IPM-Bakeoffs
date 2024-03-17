@@ -57,6 +57,8 @@ function preload()
 {
   // id,name,...
   legendas = loadTable('legendas.csv', 'csv', 'header');
+  CORRECT_CLICK = loadSound("assets/sounds/correct_click.mp3");
+  WRONG_CLICK = loadSound("assets/sounds/wrong_click.mp3");
 }
 
 // Runs once at the start
@@ -69,8 +71,6 @@ function setup()
   DEFAULT_TARGET_FONT = "Serif";
   DEFAULT_MENU_FONT = "Serif";
   DEBUG = false;
-  CORRECT_CLICK = loadSound("assets/correct_click.mp3");
-  WRONG_CLICK = loadSound("assets/wrong_click.mp3");
   createCanvas(700, 500);        // window size in px before we go into fullScreen()
   frameRate(60);                 // frame rate (DO NOT CHANGE!)
   randomizeTrials();             // randomize the trial order at the start of execution
