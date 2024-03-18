@@ -23,6 +23,10 @@ class Target {
     this.text_size = cmToPixel(text_size);
     this.wasClicked = false;
   }
+
+  reset() {
+    this.wasClicked = false;
+  }
   
   // Assumes x, and y in pixels.
   move(x, y) {
@@ -113,6 +117,11 @@ class Targets {
     this.line_height = 0;
     this.last_x = 0;
     this.last_y = 0;
+  }
+
+  reset() {
+    for (let i = 0; i < this.targets.length; i++)
+      this.targets[i].reset();
   }
 
   x() {

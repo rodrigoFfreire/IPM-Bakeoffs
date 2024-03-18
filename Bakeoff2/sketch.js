@@ -184,6 +184,7 @@ function mousePressed()
       // If there's an attempt to go create a button to start this
       if (attempt < 2)
       {
+        drawing.reset();
         continue_button = createButton('START 2ND ATTEMPT');
         continue_button.mouseReleased(continueTest);
         continue_button.position(width/2 - continue_button.size().width/2, height/2 - continue_button.size().height/2);
