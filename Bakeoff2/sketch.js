@@ -38,9 +38,9 @@ const TEXT_FACTOR_C_TARGET     = 4;
 // Below we find out out white space we can have between 2 cm targets
 let screen_width; // screen width
 let screen_height; // screen height
-let target_size = 3; // sets the target size (will be converted to cm when passed to createTargets)
+let target_size = 2.8; // sets the target size (will be converted to cm when passed to createTargets)
 let menu_target_size = 2.5;
-let target_text_size = 0.4;
+let target_text_size = 0.36;
 let menu_text_size = 1.25;
 
 let PROJECT_CODENAME = "React20LastLetter"
@@ -268,17 +268,18 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
   setupFrames(horizontal_gap, vertical_gap);
   let count = 0; // aux variable when grouping menus
   let left = 18; // number of menus
-  let group_size = 4; // size of each group
+  let group_size = 5; // size of each group
   let groups_per_row = 2; // how many groups should be side by side
 
   // Create Menu group
-  let menu_xgap = 0.75;
-  let menu_ygap = 0.75;
-  let menu_x = screen_width / 2 - ((groups_per_row * menu_target_size * group_size) + (groups_per_row * menu_xgap)) / 2;
-  let menu_w = (screen_width / 2 - menu_x) * 2.1; // .1 to account for floating point errors
+  let menu_xgap = 0.2;
+  let menu_ygap = 0.5;
+  let menu_x = screen_width / 2 - ((groups_per_row * menu_target_size * group_size) + (groups_per_row * menu_xgap)) / 2 + target_size / 2;
+  let menu_w = (screen_width / 2 - menu_x) * 2.1 + target_size; // .1 to account for floating point errors
   let menu_h = Math.ceil(left / (group_size * groups_per_row)) * (menu_target_size + menu_ygap);
-  let menu_y = screen_height - menu_h;
-  let menus = new Targets(menu_x, menu_y, menu_xgap, menu_ygap, menu_w, menu_h);
+  let menu_y = screen_height - menu_h - pixelToCm(40); // 40 is the height of the label rectangle
+  //let menus = new Targets(menu_x, menu_y, menu_xgap, menu_ygap, menu_w, menu_h);
+  let menus = new RadioMenus(menu_x, menu_y, menu_xgap, menu_ygap, menu_w, menu_h);
 
   let sufixes = new Set();
   sufixes.add("é");
@@ -290,22 +291,23 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
   });
 
   let menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * menu_target_size, menu_target_size);
-  menus.with(menuGroup);
+  //menus.with(menuGroup);
   for (let i = 0; i < cities.length; i++) {
     if (sufixes.has(cities[i].slice(-1)))
       continue;
-    if (count == group_size) {
+    /*if (count == group_size) {
       if (left < group_size)
         group_size = left;
       menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * menu_target_size, menu_target_size);
       menus.with(menuGroup);
       count = 0;
-    }
-    let menu = new Menu(0, 0, menu_target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
+    }*/
+    //let menu = new Menu(0, 0, menu_target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
+    //let menu = new ToggleableMenu(0, 0, menu_target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
     count++;
     left--;
-    menuGroup.with(menu);
-    invertedLoadMenu(menu, cities[i].slice(-1), legendas)
+    //menuGroup.with(menu);
+    invertedLoadMenu(menu_y - menu_ygap, menus.with(0, 0, menu_target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10), cities[i].slice(-1), legendas)
     sufixes.add(cities[i].slice(-1));
   }
   base_frame.with(menus);
