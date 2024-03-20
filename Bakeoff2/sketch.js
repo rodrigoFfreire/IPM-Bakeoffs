@@ -6,44 +6,43 @@
 // p5.js reference: https://p5js.org/reference/
 
 // Database (CHANGE THESE!)
-const GROUP_NUMBER        = 51;      // Add your group number here as an integer (e.g., 2, 3)
-const RECORD_TO_FIREBASE  = false;  // Set to 'true' to record user results to Firebase
+const GROUP_NUMBER             = 51;     // Add your group number here as an integer (e.g., 2, 3)
+const RECORD_TO_FIREBASE       = true;   // Set to 'true' to record user results to Firebase
 
 // Pixel density and setup variables (DO NOT CHANGE!)
 let PPI, PPCM;
-const NUM_OF_TRIALS       = 12;     // The numbers of trials (i.e., target selections) to be completed
+const NUM_OF_TRIALS            = 12;     // The numbers of trials (i.e., target selections) to be completed
 let continue_button;
-let legendas;                       // The item list from the "legendas" CSV
+let legendas;                            // The item list from the "legendas" CSV
 
 // Metrics (DO NOT CHANGE!)
-let testStartTime, testEndTime;     // time between the start and end of one attempt (8 trials)
-let hits 			      = 0;      // number of successful selections
-let misses 			      = 0;      // number of missed selections (used to calculate accuracy)
-let database;                       // Firebase DB  
+let testStartTime, testEndTime;          // time between the start and end of one attempt (8 trials)
+let hits                       = 0;      // number of successful selections
+let misses                     = 0;      // number of missed selections (used to calculate accuracy)
+let database;                            // Firebase DB  
 
 // Study control parameters (DO NOT CHANGE!)
-let draw_targets          = false;  // used to control what to show in draw()
-let trials;                         // contains the order of targets that activate in the test
-let current_trial         = 0;      // the current trial number (indexes into trials array above)
-let attempt               = 0;      // users complete each test twice to account for practice (attemps 0 and 1)
+let draw_targets               = false;  // used to control what to show in draw()
+let trials;                              // contains the order of targets that activate in the test
+let current_trial              = 0;      // the current trial number (indexes into trials array above)
+let attempt                    = 0;      // users complete each test twice to account for practice (attemps 0 and 1)
 
 // Target list and layout variables
-const GRID_ROWS           = 8;      // We divide our 80 targets in a 8x10 grid
-const GRID_COLUMNS        = 10;     // We divide our 80 targets in a 8x10 grid
-const TEXT_FACTOR_A       = 119.49008;
+const GRID_ROWS                = 8;      // We divide our 80 targets in a 8x10 grid
+const GRID_COLUMNS             = 10;     // We divide our 80 targets in a 8x10 grid
+const TEXT_FACTOR_A            = 119.49008;
 const TEXT_FACTOR_C_MENU       = 30;
 const TEXT_FACTOR_C_TARGET     = 4;
 
 // Make your decisions in 'cm', so that targets have the same size for all participants
 // Below we find out out white space we can have between 2 cm targets
-let screen_width; // screen width
-let screen_height; // screen height
-let target_size = 2.8; // sets the target size (will be converted to cm when passed to createTargets)
-let menu_target_size = 2.5;
-let target_text_size = 0.36;
-let menu_text_size = 1.25;
+let screen_width;                        // screen width
+let screen_height;                       // screen height
+let target_size                = 2.8;    // sets the target size (will be converted to cm when passed to createTargets)
+let menu_target_size           = 2.5;
+let target_text_size           = 0.36;
+let menu_text_size             = 1.25;
 
-let PROJECT_CODENAME = "React20LastLetter"
 
 let COLOR_WHITE;
 let COLOR_BLACK;
@@ -74,7 +73,7 @@ function setup()
   DEFAULT_MENU_FONT = "Serif";
   DEBUG = false;
 
-  createCanvas(1920, 1080);        // window size in px before we go into fullScreen()
+  createCanvas(1920, 1080);      // window size in px before we go into fullScreen()
   frameRate(60);                 // frame rate (DO NOT CHANGE!)
   randomizeTrials();             // randomize the trial order at the start of execution
   drawUserIDScreen();            // draws the user start-up screen (student ID and display size)
@@ -97,17 +96,6 @@ function draw()
     text("Trial " + (current_trial + 1) + " of " + trials.length, 50, 20);
     
     drawCurrentFrame();
-    // Draw all targets
-	//for (var i = 0; i < legendas.getRowCount(); i++)
-      //targets[i].draw();
-    //menus.draw();
-    
-    // Displays the city on the button being currently hovered over
-    /*fill(255, 255, 255);
-    textSize(32);
-    textAlign(CENTER);
-    text(hoverDisplay, width/2, height/2);*/
-    //text(hoverDisplay, width - 60, floor(mouseY / (height / 10)) * (height /10) + (height / 20));
     
     // Draws the target label to be selected in the current trial. We include 
     // a black rectangle behind the trial label for optimal contrast in case 
@@ -174,7 +162,7 @@ function printAndSavePerformance()
     }
     
     // Adds user performance results
-    let db_ref = database.ref('G' + GROUP_NUMBER + 'V' + PROJECT_CODENAME);
+    let db_ref = database.ref('G' + GROUP_NUMBER);
     db_ref.push(attempt_data);
   }
 }
@@ -227,42 +215,6 @@ function continueTest()
   draw_targets = true; 
 }
 
-// Creates and positions the UI targets
-/*function createTargets(target_size, horizontal_gap, vertical_gap)
-{
-  setupFrames(horizontal_gap, vertical_gap);
-  let menus = new Targets(target_size, screen_height - 3 * target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size);
-  //let outliers = new Targets(target_size, screen_height - target_size * 1.5, 1, 1, screen_width - 2 * target_size, 4 * target_size);
-  let outliers = new NamedTargets(target_size, screen_height - target_size, 0.75, 0.75, screen_width - 2 * target_size, 4 * target_size, "Others", DEFAULT_MENU_FONT, target_text_size, COLOR_WHITE);
-  let cities = legendas.getColumn(1);
-  let prefs = new Set();
-  cities.sort();
-  let outlier_cities = legendas.matchRows("^By|^Bn|^Bl", 1);
-
-  for (let i = 0; i < outlier_cities.length; i++) {
-    outliers.with(new Target(200, 200, target_size, outlier_cities[i].getString(1), outlier_cities[i].getNum(0), true, COLOR_DEFAULT_BUTTON, DEFAULT_TARGET_FONT, COLOR_WHITE, target_text_size));
-    prefs.add(outlier_cities[i].getString(1).substring(0, 2));
-  }
-
-  for (let i = 0; i < cities.length; i++) {
-    let prefix = cities[i].substring(0, 2);
-    if (prefs.has(prefix))
-      continue;
-    if (prefix.localeCompare("Be") === 0) {
-      prefix += "|Bé";
-      prefs.add("Bé");
-    }
-
-    let menu = new Menu(0, 0, target_size * 1.2, prefix.substring(0, 2).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
-    let targets = new Targets(target_size, screen_height - 4 * target_size, 0.5, 1, screen_width - target_size, 4 * target_size);
-    loadMenu(menu, targets, prefix, legendas);
-    menus.with(menu);
-    prefs.add(prefix.substring(0, 2));
-  }
-  base_frame.with(menus);
-  base_frame.with(outliers);
-}*/
-
 function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
 {
   setupFrames(horizontal_gap, vertical_gap);
@@ -295,25 +247,14 @@ function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
   for (let i = 0; i < cities.length; i++) {
     if (sufixes.has(cities[i].slice(-1)))
       continue;
-    /*if (count == group_size) {
-      if (left < group_size)
-        group_size = left;
-      menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * menu_target_size, menu_target_size);
-      menus.with(menuGroup);
-      count = 0;
-    }*/
-    //let menu = new Menu(0, 0, menu_target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
-    //let menu = new ToggleableMenu(0, 0, menu_target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10);
+
     count++;
     left--;
-    //menuGroup.with(menu);
     invertedLoadMenu(menu_y - menu_ygap, menus.with(0, 0, menu_target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10), cities[i].slice(-1), legendas)
     sufixes.add(cities[i].slice(-1));
   }
   base_frame.with(menus);
 }
-
-
 
 // Is invoked when the canvas is resized (e.g., when we go fullscreen)
 function windowResized() 
@@ -336,13 +277,6 @@ function windowResized()
     
     let vertical_gap = 2;
 
-    /*target_text_size = Math.floor(((TEXT_FACTOR_A * target_size) / display.diagonal) + TEXT_FACTOR_C_TARGET);
-    menu_text_size = Math.floor(((TEXT_FACTOR_A * menu_target_size) / display.diagonal) + TEXT_FACTOR_C_MENU);
-    console.log("Calculated text size:" + target_text_size);*/
-    
-    // Creates and positions the UI targets according to the white space defined above (in cm!)
-    // 80 represent some margins around the display (e.g., for text)
-    //createTargets(target_size, horizontal_gap, vertical_gap);
     invertedCreateTargets(target_size, horizontal_gap, vertical_gap);
 
     // Starts drawing targets immediately after we go fullscreen
