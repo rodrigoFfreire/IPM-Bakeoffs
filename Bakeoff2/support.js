@@ -2,11 +2,12 @@
 
 let student_ID_form, display_size_form, start_button;                  // Initial input variables
 let student_ID, display_size;                                          // User input parameters
+let instructions_label;                                                // Instructions
 
 // Prints the initial UI that prompts that ask for student ID and screen size
 function drawUserIDScreen()
 { 
-  background(color(0,0,0));                                          // sets background to black
+  background(COLOR_BLACK);                                          // sets background to black
   
   // Text prompt
   main_text = createDiv("Insert your student number and display size");
@@ -33,11 +34,13 @@ function drawUserIDScreen()
   display_size_label = createDiv("Display size in inches");         // create label
   display_size_label.id('input');
   display_size_label.position(10, display_size_pos_y_offset);
+
   
   // 3. Start button
   start_button = createButton('START');
+  start_button.id('start_button');
   start_button.mouseReleased(startTest);
-  start_button.position(width/2 - start_button.size().width/2, height/2 - start_button.size().height/2);
+  start_button.position(width/2 - start_button.size().width/2, height/1.2 - start_button.size().height/2);
 }
 
 // Verifies if the student ID is a number, and within an acceptable range

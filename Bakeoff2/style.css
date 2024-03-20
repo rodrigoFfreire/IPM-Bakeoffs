@@ -22,3 +22,10 @@ canvas
   font-family: 'Arial';
   color: white;
 }
+
+#start_button
+{
+  font-size: 20px;
+  font-family: 'Arial';
+  padding: 15px 60px;
+}

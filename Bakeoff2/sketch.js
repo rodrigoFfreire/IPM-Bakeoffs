@@ -6,49 +6,79 @@
 // p5.js reference: https://p5js.org/reference/
 
 // Database (CHANGE THESE!)
-const GROUP_NUMBER        = 0;      // Add your group number here as an integer (e.g., 2, 3)
-const RECORD_TO_FIREBASE  = false;  // Set to 'true' to record user results to Firebase
+const GROUP_NUMBER             = 51;     // Add your group number here as an integer (e.g., 2, 3)
+const RECORD_TO_FIREBASE       = true;   // Set to 'true' to record user results to Firebase
 
 // Pixel density and setup variables (DO NOT CHANGE!)
 let PPI, PPCM;
-const NUM_OF_TRIALS       = 12;     // The numbers of trials (i.e., target selections) to be completed
+const NUM_OF_TRIALS            = 12;     // The numbers of trials (i.e., target selections) to be completed
 let continue_button;
-let legendas;                       // The item list from the "legendas" CSV
+let legendas;                            // The item list from the "legendas" CSV
 
 // Metrics (DO NOT CHANGE!)
-let testStartTime, testEndTime;     // time between the start and end of one attempt (8 trials)
-let hits 			      = 0;      // number of successful selections
-let misses 			      = 0;      // number of missed selections (used to calculate accuracy)
-let database;                       // Firebase DB  
+let testStartTime, testEndTime;          // time between the start and end of one attempt (8 trials)
+let hits                       = 0;      // number of successful selections
+let misses                     = 0;      // number of missed selections (used to calculate accuracy)
+let database;                            // Firebase DB  
 
 // Study control parameters (DO NOT CHANGE!)
-let draw_targets          = false;  // used to control what to show in draw()
-let trials;                         // contains the order of targets that activate in the test
-let current_trial         = 0;      // the current trial number (indexes into trials array above)
-let attempt               = 0;      // users complete each test twice to account for practice (attemps 0 and 1)
+let draw_targets               = false;  // used to control what to show in draw()
+let trials;                              // contains the order of targets that activate in the test
+let current_trial              = 0;      // the current trial number (indexes into trials array above)
+let attempt                    = 0;      // users complete each test twice to account for practice (attemps 0 and 1)
 
 // Target list and layout variables
-let menus;
-const GRID_ROWS           = 2;      // We divide our 80 targets in a 8x10 grid
-const GRID_COLUMNS        = 13;     // We divide our 80 targets in a 8x10 grid
+const GRID_ROWS                = 8;      // We divide our 80 targets in a 8x10 grid
+const GRID_COLUMNS             = 10;     // We divide our 80 targets in a 8x10 grid
+const TEXT_FACTOR_A            = 119.49008;
+const TEXT_FACTOR_C_MENU       = 30;
+const TEXT_FACTOR_C_TARGET     = 4;
 
-let hoverDisplay = ""; // Display 
+// Make your decisions in 'cm', so that targets have the same size for all participants
+// Below we find out out white space we can have between 2 cm targets
+let screen_width;                        // screen width
+let screen_height;                       // screen height
+let target_size                = 2.8;    // sets the target size (will be converted to cm when passed to createTargets)
+let menu_target_size           = 2.5;
+let target_text_size           = 0.36;
+let menu_text_size             = 1.25;
+
+
+let COLOR_WHITE;
+let COLOR_BLACK;
+let COLOR_DEFAULT_BUTTON;
+let DEFAULT_TARGET_FONT;
+let DEFAULT_MENU_FONT;
+let DEBUG;
+
 
 // Ensures important data is loaded before the program starts
 function preload()
 {
   // id,name,...
   legendas = loadTable('legendas.csv', 'csv', 'header');
+  tutorial_img = loadImage("assets/images/tutorial.png");
+  CORRECT_CLICK = loadSound("assets/sounds/correct_click.mp3");
+  WRONG_CLICK = loadSound("assets/sounds/wrong_click.mp3");
 }
 
 // Runs once at the start
 function setup()
 {
-  createCanvas(700, 500);    // window size in px before we go into fullScreen()
-  frameRate(60);             // frame rate (DO NOT CHANGE!)
-  menus = new Menus();
-  randomizeTrials();         // randomize the trial order at the start of execution
-  drawUserIDScreen();        // draws the user start-up screen (student ID and display size)
+  colorMode(HSB, 360, 100, 100); // Use HSB color
+  COLOR_WHITE = color(0, 0, 100);
+  COLOR_BLACK = color(0, 0, 0);
+  COLOR_DEFAULT_BUTTON = color(210, 100, 40);
+  DEFAULT_TARGET_FONT = "Serif";
+  DEFAULT_MENU_FONT = "Serif";
+  DEBUG = false;
+
+  createCanvas(1920, 1080);      // window size in px before we go into fullScreen()
+  frameRate(60);                 // frame rate (DO NOT CHANGE!)
+  randomizeTrials();             // randomize the trial order at the start of execution
+  drawUserIDScreen();            // draws the user start-up screen (student ID and display size)
+
+  image(tutorial_img, 0, 160);   // Draws the tutorial image
 }
 
 // Runs every frame and redraws the screen
@@ -57,34 +87,24 @@ function draw()
   if (draw_targets && attempt < 2)
   {
     // The user is interacting with the 6x3 target grid
-    background(color(0,0,0));        // sets background to black
+    background(COLOR_BLACK);        // sets background to black
     
     // Print trial count at the top left-corner of the canvas
     textFont("Arial", 16);
-    fill(color(255,255,255));
+    fill(COLOR_WHITE);
     textAlign(LEFT);
     text("Trial " + (current_trial + 1) + " of " + trials.length, 50, 20);
     
-    // Draw all targets
-	//for (var i = 0; i < legendas.getRowCount(); i++)
-      //targets[i].draw();
-    menus.draw();
-    
-    // Displays the city on the button being currently hovered over
-    fill(255, 255, 255);
-    textSize(32);
-    textAlign(CENTER);
-    text(hoverDisplay, width/2, height/2);
-    //text(hoverDisplay, width - 60, floor(mouseY / (height / 10)) * (height /10) + (height / 20));
+    drawCurrentFrame();
     
     // Draws the target label to be selected in the current trial. We include 
     // a black rectangle behind the trial label for optimal contrast in case 
     // you change the background colour of the sketch (DO NOT CHANGE THESE!)
-    fill(color(0,0,0));
+    fill(COLOR_BLACK);
     rect(0, height - 40, width, 40);
  
     textFont("Arial", 20);
-    fill(color(255,255,255));
+    fill(COLOR_WHITE);
     textAlign(CENTER);
     text(legendas.getString(trials[current_trial],1), width/2, height - 20);
   }
@@ -102,8 +122,8 @@ function printAndSavePerformance()
   let timestamp         = day() + "/" + month() + "/" + year() + "  " + hour() + ":" + minute() + ":" + second();
   
   textFont("Arial", 18);
-  background(color(0,0,0));   // clears screen
-  fill(color(255,255,255));   // set text fill color to white
+  background(COLOR_BLACK);   // clears screen
+  fill(COLOR_WHITE);   // set text fill color to white
   textAlign(LEFT);
   text(timestamp, 10, 20);    // display time on screen (top-left corner)
   
@@ -128,7 +148,7 @@ function printAndSavePerformance()
         accuracy:           accuracy,
         attempt_duration:   test_time,
         time_per_target:    time_per_target,
-        target_w_penalty:   target_w_penalty,
+        target_w_penalty:   target_w_penalty,          
   }
   
   // Sends data to DB (DO NOT CHANGE!)
@@ -154,30 +174,7 @@ function mousePressed()
   // (i.e., during target selections)
   if (draw_targets)
   {
-    let click = menus.clicked(mouseX, mouseY);
-    if (click !== -1) {
-      if (click === trials[current_trial] + 1)
-        hits++;
-      else
-        misses++;
-      menus.select(-1);
-      current_trial++;
-    } else {
-      menus.select(menus.clickedMenu(mouseX, mouseY));
-    }
-    /*for (var i = 0; i < legendas.getRowCount(); i++)
-    {
-      // Check if the user clicked over one of the targets
-      if (targets[i].clicked(mouseX, mouseY)) 
-      {
-        // Checks if it was the correct target
-        if (targets[i].id === trials[current_trial] + 1) hits++;
-        else misses++;
-        
-        current_trial++;              // Move on to the next trial/target
-        break;
-      }
-    }*/
+    detectClick(mouseX, mouseY);
     
     // Check if the user has completed all trials
     if (current_trial === NUM_OF_TRIALS)
@@ -190,6 +187,7 @@ function mousePressed()
       // If there's an attempt to go create a button to start this
       if (attempt < 2)
       {
+        base_frame.reset();
         continue_button = createButton('START 2ND ATTEMPT');
         continue_button.mouseReleased(continueTest);
         continue_button.position(width/2 - continue_button.size().width/2, height/2 - continue_button.size().height/2);
@@ -197,18 +195,6 @@ function mousePressed()
     }
     // Check if this was the first selection in an attempt
     else if (current_trial === 1) testStartTime = millis(); 
-  }
-}
-
-// Mouse was moved
-function mouseMoved() 
-{
-  // Only look for mouse releases during the actual test
-  // (i.e., during target selections)
-  if (draw_targets)
-  {
-    menus.clicked(mouseX, mouseY);
-    menus.clickedMenu(mouseX, mouseY);
   }
 }
 
@@ -229,48 +215,45 @@ function continueTest()
   draw_targets = true; 
 }
 
-// Creates and positions the UI targets
-function createTargets(target_size, horizontal_gap, vertical_gap)
+function invertedCreateTargets(target_size, horizontal_gap, vertical_gap)
 {
-  menus.with("Ba", target_size, horizontal_gap, vertical_gap);
-  menus.with("Br", target_size, horizontal_gap, vertical_gap);
-  menus.with("Be", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bu", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bh", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bi", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bl", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bo", target_size, horizontal_gap, vertical_gap);
-  menus.with("By", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bé", target_size, horizontal_gap, vertical_gap);
-  menus.with("Bn", target_size, horizontal_gap, vertical_gap);
-  /*// Define the margins between targets by dividing the white space 
-  // for the number of targets minus one
-  h_margin = horizontal_gap / (GRID_COLUMNS -1);
-  v_margin = vertical_gap / (GRID_ROWS - 1);
-  
-  legendas.rows.sort((a, b) => {
-        let valueA = a.getString(1);
-        let valueB = b.getString(1);
-        return valueA.localeCompare(valueB);
-    });
-  
-  // Set targets in a 8 x 10 grid
-  for (var r = 0; r < GRID_ROWS; r++)
-  {
-    for (var c = 0; c < GRID_COLUMNS; c++)
-    {
-      let target_x = 40 + (h_margin + target_size) * c + target_size/2;        // give it some margin from the left border
-      let target_y = (v_margin + target_size) * r + target_size/2;
-      
-      // Find the appropriate label and ID for this target
-      let legendas_index = c + GRID_COLUMNS * r;
-      let target_id = legendas.getNum(legendas_index, 0);
-      let target_label = legendas.getString(legendas_index, 1);
-      
-      let target = new Target(target_x, target_y + 40, target_size, target_label, target_id);
-      targets.push(target);
-    }  
-  }*/
+  setupFrames(horizontal_gap, vertical_gap);
+  let count = 0; // aux variable when grouping menus
+  let left = 18; // number of menus
+  let group_size = 5; // size of each group
+  let groups_per_row = 2; // how many groups should be side by side
+
+  // Create Menu group
+  let menu_xgap = 0.2;
+  let menu_ygap = 0.5;
+  let menu_x = screen_width / 2 - ((groups_per_row * menu_target_size * group_size) + (groups_per_row * menu_xgap)) / 2 + target_size / 2;
+  let menu_w = (screen_width / 2 - menu_x) * 2.1 + target_size; // .1 to account for floating point errors
+  let menu_h = Math.ceil(left / (group_size * groups_per_row)) * (menu_target_size + menu_ygap);
+  let menu_y = screen_height - menu_h - pixelToCm(40); // 40 is the height of the label rectangle
+  //let menus = new Targets(menu_x, menu_y, menu_xgap, menu_ygap, menu_w, menu_h);
+  let menus = new RadioMenus(menu_x, menu_y, menu_xgap, menu_ygap, menu_w, menu_h);
+
+  let sufixes = new Set();
+  sufixes.add("é");
+  sufixes.add("á");
+  let cities = legendas.getColumn(1);
+  cities.sort((A, B) => {
+    let res = A.slice(-1).localeCompare(B.slice(-1));
+    return res;
+  });
+
+  let menuGroup = new Targets(0, 0, 0, 0, (group_size + 0.1) * menu_target_size, menu_target_size);
+  //menus.with(menuGroup);
+  for (let i = 0; i < cities.length; i++) {
+    if (sufixes.has(cities[i].slice(-1)))
+      continue;
+
+    count++;
+    left--;
+    invertedLoadMenu(menu_y - menu_ygap, menus.with(0, 0, menu_target_size, cities[i].slice(-1).toUpperCase(), COLOR_DEFAULT_BUTTON, DEFAULT_MENU_FONT, COLOR_WHITE, menu_text_size, base_frame, 10, 10), cities[i].slice(-1), legendas)
+    sufixes.add(cities[i].slice(-1));
+  }
+  base_frame.with(menus);
 }
 
 // Is invoked when the canvas is resized (e.g., when we go fullscreen)
@@ -287,16 +270,14 @@ function windowResized()
   
     // Make your decisions in 'cm', so that targets have the same size for all participants
     // Below we find out out white space we can have between 2 cm targets
-    let screen_width   = display.width * 2.54;             // screen width
-    let screen_height  = display.height * 2.54;            // screen height
-    let target_size    = 3;                                // sets the target size (will be converted to cm when passed to createTargets)
-    let horizontal_gap = screen_width - target_size * GRID_COLUMNS;// empty space in cm across the x-axis (based on 10 targets per row)
-    let vertical_gap   = screen_height - target_size * GRID_ROWS;  // empty space in cm across the y-axis (based on 8 targets per column)
+    screen_width   = display.width * 2.54;             // screen width
+    screen_height  = display.height * 2.54;            // screen height
 
-    menus.clear();
-    // Creates and positions the UI targets according to the white space defined above (in cm!)
-    // 80 represent some margins around the display (e.g., for text)
-    createTargets(target_size * PPCM, horizontal_gap * PPCM - 80, vertical_gap * PPCM - 80);
+    let horizontal_gap = 2;
+    
+    let vertical_gap = 2;
+
+    invertedCreateTargets(target_size, horizontal_gap, vertical_gap);
 
     // Starts drawing targets immediately after we go fullscreen
     draw_targets = true;
